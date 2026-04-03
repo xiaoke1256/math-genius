@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数学小达人闯关 v1</title>
+  <style>
+    :root {
+      --bg-1: #8ec5fc;
+      --bg-2: #e0c3fc;
+      --card: rgba(255, 255, 255, 0.9);
+      --text: #233044;
+      --ok: #1ca56e;
+      --bad: #e64d5e;
+      --accent: #5964ff;
+      --warn: #ff9f1a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .app {
+      width: min(920px, 100%);
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+    }
+    .top {
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.75);
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      font-size: 14px;
+    }
+    .chip {
+      background: #fff;
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+      font-weight: 700;
+    }
+    .view {
+      padding: 22px 18px 24px;
+      min-height: 460px;
+    }
+    h1, h2, h3, p { margin: 0 0 12px; }
+    .center { text-align: center; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      transition: transform 0.08s ease, filter 0.15s ease;
+    }
+    button:hover { filter: brightness(1.04); }
+    button:active { transform: translateY(1px); }
+    .btn-main { background: var(--accent); color: #fff; }
+    .btn-sub { background: #fff; color: #31415f; border: 2px solid #dce2ff; }
+    .btn-warn { background: var(--warn); color: #fff; }
+    .question {
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 800;
+      margin: 18px 0 14px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 10px;
+      max-width: 480px;
+      margin: 0 auto 14px;
+    }
+    .choice { background: #fff; border: 2px solid #dbe3ff; color: #2c3d62; }
+    .choice.ok { background: #ddffe9; border-color: #95e5bc; }
+    .choice.bad { background: #ffe0e4; border-color: #ff9cab; }
+    .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .bar-wrap {
+      width: min(680px, 100%);
+      margin: 8px auto 16px;
+      height: 14px;
+      background: #eaf0ff;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #3f88ff, #6d5bff);
+      transition: width 0.2s ease;
+    }
+    .status {
+      text-align: center;
+      font-size: 18px;
+      min-height: 30px;
+      font-weight: 700;
+    }
+    .ok-msg { color: var(--ok); }
+    .bad-msg { color: var(--bad); }
+    .shake { animation: shake 0.28s linear; }
+    .pulse { animation: pulse 0.3s ease; }
+    .tiny { font-size: 13px; color: #54617e; }
+    .q-tag {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0 0 8px;
+    }
+    .q-tag.trick { color: #0d7a4d; }
+    .q-tag.trap { color: #c76a00; }
+    .theme-preview {
+      border-radius: 12px;
+      min-height: 58px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    .fx {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      font-size: 18px;
+      animation: rise 1.1s ease forwards;
+    }
+    @keyframes rise {
+      0% { transform: translateY(20px) scale(0.8); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-90px) scale(1.2); opacity: 0; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="fx" id="fx"></div>
+    <div class="top">
+      <div class="chip">关卡 <span id="lv">1</span></div>
+      <div class="chip">进度 <span id="progressText">0/8</span></div>
+      <div class="chip">时间 <span id="time">60</span>s</div>
+      <div class="chip">生命 <span id="life">3</span></div>
+      <div class="chip">连击 <span id="combo">0</span></div>
+      <div class="chip">得分 <span id="score">0</span></div>
+    </div>
+    <div class="view" id="view"></div>
+  </div>
+
+  <script>
+    const themes = {
+      sky: ["#8ec5fc", "#e0c3fc", "天空"],
+      sea: ["#43cea2", "#185a9d", "海洋"],
+      forest: ["#56ab2f", "#a8e063", "森林"]
+    };
+
+    const levels = {
+      low: { label: "1-2年级", ops: ["+", "-"], max: 20, count: 8, time: 60 },
+      mid: { label: "3-4年级", ops: ["+", "-", "x"], max: 80, count: 10, time: 70 },
+      high: { label: "5-6年级", ops: ["+", "-", "x", "÷"], max: 120, count: 12, time: 80 }
+    };
+
+    const state = {
+      stage: "home",
+      grade: "low",
+      theme: "sky",
+      levelNum: 1,
+      score: 0,
+      combo: 0,
+      life: 3,
+      totalCount: 8,
+      done: 0,
+      timer: 60,
+      current: null,
+      intervalId: null
+    };
+
+    const view = document.getElementById("view");
+    const app = document.getElementById("app");
+    const fx = document.getElementById("fx");
+    const refs = {
+      lv: document.getElementById("lv"),
+      progressText: document.getElementById("progressText"),
+      time: document.getElementById("time"),
+      life: document.getElementById("life"),
+      combo: document.getElementById("combo"),
+      score: document.getElementById("score")
+    };
+
+    function applyTheme() {
+      const [c1, c2] = themes[state.theme];
+      document.documentElement.style.setProperty("--bg-1", c1);
+      document.documentElement.style.setProperty("--bg-2", c2);
+    }
+
+    function syncTopBar() {
+      refs.lv.textContent = state.levelNum;
+      refs.progressText.textContent = `${state.done}/${state.totalCount}`;
+      refs.time.textContent = state.timer;
+      refs.life.textContent = state.life;
+      refs.combo.textContent = state.combo;
+      refs.score.textContent = state.score;
+    }
+
+    function homeView() {
+      state.stage = "home";
+      clearInterval(state.intervalId);
+      const gradeButtons = Object.entries(levels).map(([k, v]) =>
+        `<button class="${state.grade === k ? "btn-main" : "btn-sub"}" data-grade="${k}">${v.label}</button>`
+      ).join("");
+      const themeButtons = Object.entries(themes).map(([k, v]) =>
+        `<button class="${state.theme === k ? "btn-main" : "btn-sub"}" data-theme="${k}">
+          ${v[2]}
+          <div class="theme-preview" style="background: linear-gradient(120deg, ${v[0]}, ${v[1]})"></div>
+        </button>`
+      ).join("");
+
+      view.innerHTML = `
+        <div class="center">
+          <h1>数学小达人闯关 v1</h1>
+          <p>先做一版可玩原型：选年级、选主题、开始挑战。3-4年级会穿插<strong>巧算题</strong>和<strong>防陷阱题</strong>（看起来像能巧算，要先按规则算）。</p>
+        </div>
+        <h3>选择年级</h3>
+        <div class="grid">${gradeButtons}</div>
+        <h3>选择主题</h3>
+        <div class="grid">${themeButtons}</div>
+        <div class="row" style="margin-top: 12px;">
+          <button class="btn-main" id="startBtn">开始闯关</button>
+          <button class="btn-sub" id="howBtn">玩法说明</button>
+        </div>
+        <p class="tiny center" style="margin-top:10px;">按键快捷：A/B/C/D 选择答案，道具键 T 加时，H 提示。</p>
+      `;
+      syncTopBar();
+
+      view.querySelectorAll("[data-grade]").forEach(btn => {
+        btn.onclick = () => { state.grade = btn.dataset.grade; homeView(); };
+      });
+      view.querySelectorAll("[data-theme]").forEach(btn => {
+        btn.onclick = () => { state.theme = btn.dataset.theme; applyTheme(); homeView(); };
+      });
+      document.getElementById("startBtn").onclick = startGame;
+      document.getElementById("howBtn").onclick = () => {
+        alert("规则：答对加分，答错扣生命。连击越高加分越多。闯关结束后可继续下一关。");
+      };
+    }
+
+    function buildQuestion() {
+      const cfg = levels[state.grade];
+      if (state.grade === "mid") {
+        const roll = Math.random();
+        if (roll < 0.34) return buildMidTrickQuestion(cfg);
+        if (roll < 0.66) return buildMidFalseTrickQuestion(cfg);
+      }
+      const op = cfg.ops[Math.floor(Math.random() * cfg.ops.length)];
+      let a = 0, b = 0, ans = 0;
+      if (op === "+") {
+        a = rand(1, cfg.max); b = rand(1, cfg.max); ans = a + b;
+      } else if (op === "-") {
+        a = rand(1, cfg.max); b = rand(1, a); ans = a - b;
+      } else if (op === "x") {
+        a = rand(2, Math.min(12, Math.floor(cfg.max / 4)));
+        b = rand(2, 12);
+        ans = a * b;
+      } else {
+        b = rand(2, 12);
+        ans = rand(2, 12);
+        a = b * ans;
+      }
+      const distractors = makeDistractors(op, a, b, ans, cfg.max);
+      const choices = shuffleUniqueFour(ans, distractors);
+      return { text: `${a} ${op} ${b} = ?`, answer: ans, choices };
+    }
+
+    /** 中年级：可用凑整、结合律、分配律等技巧计算的题 */
+    function buildMidTrickQuestion(cfg) {
+      const t = rand(0, 5);
+      let text = "";
+      let ans = 0;
+      const extra = [];
+      switch (t) {
+        case 0: {
+          const x = rand(11, 89);
+          const y = 100 - x;
+          ans = 100;
+          text = `${x} + ${y} = ?`;
+          extra.push(99, 101, ans - 1);
+          break;
+        }
+        case 1: {
+          const pairs = [[25, 75], [20, 80], [35, 65], [40, 60], [45, 55], [30, 70], [15, 85]];
+          const [p1, p2] = pairs[rand(0, pairs.length - 1)];
+          const mid = rand(12, 48);
+          ans = 100 + mid;
+          text = `${p1} + ${mid} + ${p2} = ?`;
+          extra.push(ans - 1, ans + 1, ans - 10);
+          break;
+        }
+        case 2: {
+          const k = rand(18, 58);
+          ans = 99 + k;
+          text = `99 + ${k} = ?`;
+          extra.push(100 + k, 98 + k, ans - 1);
+          break;
+        }
+        case 3: {
+          const m = rand(25, 65);
+          ans = 101 - m;
+          text = `101 - ${m} = ?`;
+          extra.push(100 - m, 102 - m, ans + 1);
+          break;
+        }
+        case 4: {
+          const a = rand(3, 9);
+          const combos = [[2, 5], [5, 2], [4, 5], [5, 4], [2, 10]];
+          const [b, c] = combos[rand(0, combos.length - 1)];
+          ans = a * b * c;
+          text = `${a} x ${b} x ${c} = ?`;
+          extra.push(a * (b + c), (a + b) * c, a * b + c, ans - a, ans + a);
+          break;
+        }
+        default: {
+          const n = rand(5, 12);
+          const a = rand(1, 9);
+          const b = 10 - a;
+          ans = n * 10;
+          text = `${n} x ${a} + ${n} x ${b} = ?`;
+          extra.push(n * a + b, n * b + a, n + ans - 10, ans - n, ans + n);
+          break;
+        }
+      }
+      return {
+        text,
+        answer: ans,
+        choices: shuffleUniqueFour(ans, [...extra, ...extraNumericDistractors(ans)]),
+        tag: "巧算题"
+      };
+    }
+
+    /** 中年级：长得像能“巧算”，但运算法则或凑整要小心，硬算才对 */
+    function buildMidFalseTrickQuestion(cfg) {
+      const t = rand(0, 4);
+      let text = "";
+      let ans = 0;
+      const extra = [];
+      switch (t) {
+        case 0: {
+          let a, b, c, trap;
+          let guard = 0;
+          do {
+            a = rand(6, 22);
+            b = rand(2, 9);
+            c = rand(2, 9);
+            ans = a + b * c;
+            trap = (a + b) * c;
+            guard += 1;
+          } while (trap === ans && guard < 40);
+          if (trap === ans) {
+            a = 7; b = 3; c = 4;
+            ans = a + b * c;
+            trap = (a + b) * c;
+          }
+          text = `${a} + ${b} x ${c} = ?`;
+          extra.push(trap, a + b + c, a * b + c, ans - 1, ans + 1);
+          break;
+        }
+        case 1: {
+          const k = rand(18, 55);
+          ans = 98 + k;
+          text = `98 + ${k} = ?`;
+          extra.push(100 + k, 99 + k, 97 + k, ans - 2);
+          break;
+        }
+        case 2: {
+          const m = rand(28, 68);
+          ans = 102 - m;
+          text = `102 - ${m} = ?`;
+          extra.push(100 - m, 101 - m, 103 - m, ans + 2);
+          break;
+        }
+        case 3: {
+          const x = rand(32, 63);
+          const y = 101 - x;
+          ans = x + y;
+          text = `${x} + ${y} = ?`;
+          extra.push(100, 102, 99, ans - 2);
+          break;
+        }
+        default: {
+          const k = rand(20, 50);
+          ans = 89 + k;
+          text = `89 + ${k} = ?`;
+          extra.push(90 + k, 88 + k, 91 + k, 100 + k - 2);
+          break;
+        }
+      }
+      return {
+        text,
+        answer: ans,
+        choices: shuffleUniqueFour(ans, [...extra, ...extraNumericDistractors(ans)]),
+        tag: "防陷阱（别急着巧算）"
+      };
+    }
+
+    function extraNumericDistractors(ans) {
+      const pool = [];
+      const push = (...vals) => {
+        for (const v of vals) {
+          if (typeof v !== "number" || !Number.isFinite(v)) continue;
+          const x = Math.round(v);
+          if (x >= 0 && x !== ans) pool.push(x);
+        }
+      };
+      push(ans - 1, ans + 1, ans - 10, ans + 10);
+      return pool;
+    }
+
+    /** 常见“粗心型”错误：加减乘除混淆、数位错、结果±1 等，再不够再随机凑 */
+    function makeDistractors(op, a, b, ans, maxOperand, extraPool) {
+      const pool = [];
+      const push = (...vals) => {
+        for (const v of vals) {
+          if (typeof v !== "number" || !Number.isFinite(v)) continue;
+          const x = Math.round(v);
+          if (x >= 0 && x !== ans) pool.push(x);
+        }
+      };
+      if (extraPool && extraPool.length) push(...extraPool);
+
+      if (op === "+") {
+        push(a - b, b - a);
+        push(Math.abs(a - b));
+        push(a + b - 10, a + b + 10);
+        if ((a % 10) + (b % 10) >= 10) {
+          const noCarry = (a % 10 + b % 10) % 10 + Math.floor(a / 10) * 10 + Math.floor(b / 10) * 10;
+          push(noCarry);
+        }
+        if (a * b <= maxOperand * 6) push(a * b);
+        push(ans - 1, ans + 1, ans - 10, ans + 10);
+        push(a, b);
+      } else if (op === "-") {
+        push(a + b);
+        push(b - a);
+        push(Math.abs(b - a));
+        push(a + b - 10);
+        push(ans + b, a - ans);
+        push(ans - 1, ans + 1);
+        push(a, b);
+      } else if (op === "x") {
+        push(a + b, a - b, Math.abs(a - b));
+        if (a + b !== ans) push(a + b + 1, a + b - 1);
+        push(ans - a, ans - b);
+        push(ans - 1, ans + 1);
+        if (ans > a && ans > b) push(Math.floor(ans / a) + b, Math.floor(ans / b) + a);
+        push(a, b);
+      } else {
+        push(a + b, a - b, Math.abs(a - b));
+        push(b + ans, b * (ans + 1), b * Math.max(1, ans - 1));
+        push(ans + 1, ans - 1);
+        push(a + 1, a - 1);
+      }
+
+      return pool;
+    }
+
+    function shuffleUniqueFour(ans, rawPool) {
+      const seen = new Set([ans]);
+      const out = [ans];
+      const pool = [...rawPool];
+      shuffle(pool);
+      for (const x of pool) {
+        if (out.length >= 4) break;
+        if (!seen.has(x)) {
+          seen.add(x);
+          out.push(x);
+        }
+      }
+      let tries = 0;
+      while (out.length < 4 && tries++ < 40) {
+        let delta = rand(-12, 12);
+        if (delta === 0) delta = rand(3, 9) * (Math.random() < 0.5 ? -1 : 1);
+        const fake = Math.max(0, ans + delta);
+        if (!seen.has(fake)) {
+          seen.add(fake);
+          out.push(fake);
+        }
+      }
+      shuffle(out);
+      return out;
+    }
+
+    function startGame() {
+      const cfg = levels[state.grade];
+      state.stage = "play";
+      state.score = 0;
+      state.combo = 0;
+      state.life = 3;
+      state.done = 0;
+      state.totalCount = cfg.count;
+      state.timer = cfg.time;
+      state.levelNum = 1;
+      state.current = buildQuestion();
+      clearInterval(state.intervalId);
+      state.intervalId = setInterval(() => {
+        if (state.stage !== "play") return;
+        state.timer -= 1;
+        syncTopBar();
+        if (state.timer <= 0) finishGame("时间到");
+      }, 1000);
+      renderPlay();
+    }
+
+    function renderPlay(msg = "") {
+      syncTopBar();
+      const bar = Math.floor((state.done / state.totalCount) * 100);
+      const labels = ["A", "B", "C", "D"];
+      const choices = state.current.choices.map((n, i) =>
+        `<button class="choice" data-choice="${n}">${labels[i]}. ${n}</button>`
+      ).join("");
+      const tagLine = state.current.tag
+        ? `<div class="q-tag ${String(state.current.tag).includes("巧算") ? "trick" : "trap"}">${state.current.tag}</div>`
+        : "";
+      view.innerHTML = `
+        <div class="bar-wrap"><div class="bar" style="width:${bar}%"></div></div>
+        <div class="status ${msg.includes("答对") ? "ok-msg" : msg.includes("答错") ? "bad-msg" : ""}">${msg}</div>
+        ${tagLine}
+        <div class="question">${state.current.text}</div>
+        <div class="choices">${choices}</div>
+        <div class="row">
+          <button class="btn-warn" id="toolTime">道具T：+8秒</button>
+          <button class="btn-sub" id="toolHint">道具H：提示奇偶</button>
+        </div>
+      `;
+      view.querySelectorAll("[data-choice]").forEach(btn => {
+        btn.onclick = () => submitAnswer(Number(btn.dataset.choice), btn);
+      });
+      document.getElementById("toolTime").onclick = useTimeTool;
+      document.getElementById("toolHint").onclick = useHintTool;
+    }
+
+    function submitAnswer(val, btn) {
+      if (state.stage !== "play") return;
+      const correct = val === state.current.answer;
+      if (correct) {
+        state.combo += 1;
+        const bonus = Math.min(10, Math.floor(state.combo / 3) * 2);
+        state.score += 10 + bonus;
+        state.done += 1;
+        btn.classList.add("ok");
+        app.classList.add("pulse");
+        spawnStars("⭐");
+        setTimeout(() => app.classList.remove("pulse"), 280);
+        if (state.done >= state.totalCount) return nextLevel();
+        state.current = buildQuestion();
+        setTimeout(() => renderPlay(`答对啦！+${10 + bonus} 分`), 250);
+      } else {
+        state.combo = 0;
+        state.life -= 1;
+        btn.classList.add("bad");
+        app.classList.add("shake");
+        setTimeout(() => app.classList.remove("shake"), 260);
+        if (state.life <= 0) return finishGame("生命值用完");
+        setTimeout(() => renderPlay("答错了，再试试下一题"), 280);
+      }
+      syncTopBar();
+    }
+
+    function useTimeTool() {
+      if (state.stage !== "play") return;
+      state.timer += 8;
+      state.score = Math.max(0, state.score - 5);
+      spawnStars("⏳");
+      renderPlay("使用时间沙漏：+8秒（扣5分）");
+    }
+
+    function useHintTool() {
+      if (state.stage !== "play") return;
+      const parity = state.current.answer % 2 === 0 ? "偶数" : "奇数";
+      state.score = Math.max(0, state.score - 3);
+      renderPlay(`提示：答案是${parity}（扣3分）`);
+    }
+
+    function nextLevel() {
+      state.levelNum += 1;
+      state.done = 0;
+      state.totalCount += 2;
+      state.timer += 15;
+      state.life = Math.min(5, state.life + 1);
+      state.current = buildQuestion();
+      spawnStars("🎉");
+      renderPlay("恭喜通关！进入下一关");
+    }
+
+    function finishGame(reason) {
+      state.stage = "end";
+      clearInterval(state.intervalId);
+      const rank = state.score >= 180 ? "数学超人" : state.score >= 120 ? "闯关高手" : "努力新星";
+      view.innerHTML = `
+        <div class="center">
+          <h2>本局结束</h2>
+          <p>${reason}</p>
+          <h1 style="margin-top: 8px;">${state.score} 分</h1>
+          <p>称号：${rank}</p>
+          <p>最高关卡：第 ${state.levelNum} 关</p>
+          <div class="row" style="margin-top: 14px;">
+            <button class="btn-main" id="againBtn">再来一局</button>
+            <button class="btn-sub" id="homeBtn">返回首页</button>
+          </div>
+        </div>
+      `;
+      document.getElementById("againBtn").onclick = startGame;
+      document.getElementById("homeBtn").onclick = homeView;
+      saveBest();
+    }
+
+    function saveBest() {
+      const key = "math-genius-v1-best";
+      const old = Number(localStorage.getItem(key) || 0);
+      if (state.score > old) localStorage.setItem(key, String(state.score));
+    }
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+    function spawnStars(char) {
+      for (let i = 0; i < 8; i++) {
+        const e = document.createElement("div");
+        e.className = "star";
+        e.textContent = char;
+        e.style.left = `${rand(10, 90)}%`;
+        e.style.top = `${rand(35, 75)}%`;
+        fx.appendChild(e);
+        setTimeout(() => e.remove(), 1100);
+      }
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (state.stage === "play") {
+        if (["a", "b", "c", "d"].includes(e.key.toLowerCase())) {
+          const idx = e.key.toLowerCase().charCodeAt(0) - "a".charCodeAt(0);
+          const c = state.current.choices[idx];
+          if (c !== undefined) submitAnswer(c, { classList: { add: () => {} } });
+        } else if (e.key.toLowerCase() === "t") {
+          useTimeTool();
+        } else if (e.key.toLowerCase() === "h") {
+          useHintTool();
+        }
+      }
+    });
+
+    applyTheme();
+    homeView();
+  </script>
+</body>
+</html>
+
