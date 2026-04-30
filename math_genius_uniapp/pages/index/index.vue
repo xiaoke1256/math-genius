@@ -39,23 +39,20 @@
 		},
 		methods: {
 			onSelect: function(event){
-				const selectedGrade = event.target.dataset.grade;
+				const selectedGrade = event.currentTarget.dataset.grade;
 				console.log("selectedGrade:"+selectedGrade)
 				this.grade = selectedGrade;
 				
 			},
 			toMain:function(){
-				// #ifdef H5
-				window.location.hash = '#/pages/main/main'
-				// #endif
-				// #ifndef H5
+				
 				uni.navigateTo({
 					url: '/pages/main/main',
 					fail: (err) => {
 						console.error('navigateTo fail', err)
 					}
 				})
-				// #endif
+
 			}
 		}
 	}
