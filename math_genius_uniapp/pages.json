@@ -13,7 +13,7 @@
 		{
 			"path": "pages/main/main",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarTitleText": "闯关中..."
 			}
 		}
 	],

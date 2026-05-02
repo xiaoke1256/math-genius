@@ -19,4 +19,12 @@
 	uni-page-body,html,body{
 		height: 100%;  
 	}
+	
+	.content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-between;
+		height: 100%;
+	}
 </style>

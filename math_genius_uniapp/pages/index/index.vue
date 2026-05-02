@@ -20,10 +20,14 @@
 
 <script>
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
+	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
+	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
 	
 	export default {
 		components: {
-			UButton
+			UButton,
+			'up-icon': UIcon,
+			'u-loading-icon': ULoadingIcon
 		},
 		data() {
 			return {
@@ -85,8 +89,9 @@
 		margin-bottom: 50rpx;
 	}
 	.select-grade-area {
-		width: 90%;
+		width: 100%;
 		padding: 60rpx;
+		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;
