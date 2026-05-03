@@ -4,11 +4,11 @@
 			<view class="head-items">
 				<view class="item" >
 					<view class="item-head" >关卡</view>
-					<view class="item-value" >2</view>
+					<view class="item-value" >{{level}}</view>
 				</view>
 				<view class="item" >
 					<view class="item-head" >进度</view>
-					<view class="item-value" >4</view>
+					<view class="item-value" >{{done}}/{{totalQustions}}</view>
 				</view>
 				<view class="item" >
 					<view class="item-head" >时间</view>
@@ -60,8 +60,9 @@
 		},
 		data() {
 			return {
+				btnEnable:true,
 				level:1,
-				questionIndex:0,
+				done:0,
 				totalQustions:8,
 				countdown:70,
 				hp:3,
@@ -76,6 +77,11 @@
 		},
 		methods: {
 			onSelectItem: function(event){
+				if(!this.btnEnable){
+					//拒绝响应
+					return false;
+				}
+				this.btnEnable = false;
 				const itemCode = event.currentTarget.dataset.itemCode;
 				console.log("event.currentTarget.dataset.itemCode:",event.currentTarget.dataset.itemCode);
 				if(this.crrectItemCode === itemCode){
@@ -86,9 +92,24 @@
 				//显示错误样式半秒钟，然后消失
 				this.selectedItemCode = itemCode;
 				setTimeout(()=>{this.selectedItemCode=''},500);
-				//TODO 更新成绩
+				//更新成绩
+				this.refreshScore(this.crrectItemCode === itemCode);
 				//半秒后进入下一题，或下一关
 				
+				
+			},
+			refreshScore(correct) {
+			    if (correct) {
+					this.combo += 1;
+					const bonus = Math.min(10, Math.floor(this.combo / 3) * 2);
+					this.score += 10 + bonus;
+					this.done += 1;
+					const msg = `答对啦！+${10 + bonus} 分`;
+			    } else {
+					state.combo = 0;
+					state.life -= 1;
+					const msg = `答错啦`;
+			    }
 			},
 			responseClass(itemCode) {
 			    if(itemCode==this.selectedItemCode){
@@ -105,7 +126,7 @@
 		},
 		computed: {
 		  	progress(){
-				return Math.floor(this.questionIndex/this.totalQustions*100);
+				return Math.floor(this.done/this.totalQustions*100);
 			}
 		}
 		            
