@@ -34,13 +34,16 @@
 		
 		<view class="question-area" >
 			<view class="express-area"><!-- 题干 -->
-				<text>3 + 1 = ?</text>
+				<text>{{express}}</text>
 			</view>
 			<view class="item-area">
+				<u-button v-for="option in options" :key="option.charAt(0)" :class="['button',responseClass(option.charAt(0))]" :data-item-code="option.charAt(0)" @click="onSelectItem">{{option}}</u-button>
+				<!--
 				<u-button :class="['button',responseClass('A')]" data-item-code="A" @click="onSelectItem">A.  3</u-button>
 				<u-button :class="['button',responseClass('B')]" data-item-code="B" @click="onSelectItem">B.  2</u-button>
 				<u-button :class="['button',responseClass('C')]" data-item-code="C" @click="onSelectItem">C.  4</u-button>
 				<u-button :class="['button',responseClass('D')]" data-item-code="D" @click="onSelectItem">D.  6</u-button>
+				-->
 			</view>
 		</view>
 		
@@ -61,6 +64,7 @@
 		data() {
 			return {
 				btnEnable:true,
+				grade:'',
 				level:1,
 				done:0,
 				totalQustions:8,
@@ -68,12 +72,16 @@
 				hp:3,
 				combo:0,
 				score:0,
+				express:'',
+				options:[],
 				crrectItemCode:'C',
 				selectedItemCode:''
 			}
 		},
-		onLoad() {
-	
+		onLoad(options) {
+			this.grade = options.grade;
+			console.log("this.grade:"+this.grade)
+			this.nextQuestion(this.grade)
 		},
 		methods: {
 			onSelectItem: function(event){
@@ -95,6 +103,7 @@
 				//更新成绩
 				this.refreshScore(this.crrectItemCode === itemCode);
 				//半秒后进入下一题，或下一关
+				setTimeout(()=>{this.nextQuestion(this.grade)},501);
 				
 				
 			},
@@ -106,10 +115,101 @@
 					this.done += 1;
 					const msg = `答对啦！+${10 + bonus} 分`;
 			    } else {
-					state.combo = 0;
-					state.life -= 1;
+					this.combo = 0;
+					this.hp -= 1;
 					const msg = `答错啦`;
 			    }
+			},
+			nextQuestion(grade) {
+				//如果时间或生命值耗尽，提示游戏结束
+				//如果进度达到100%,升级
+				//中年级
+				//100以内加减法
+				const {express,options,crrectItemCode} = this.addAndSubQuestion();
+				console.log("express,options,crrectItemCode:",express,options,crrectItemCode);
+				this.express=express;
+				this.options=options;
+				this.crrectItemCode=crrectItemCode;
+				//表内乘除法
+				//带余数除法
+				//三目四则混合运算
+				
+				this.btnEnable=true;
+			},
+			/*100以内加减法*/
+			addAndSubQuestion() {
+				const op = Math.ceil(Math.random()*2)==0?'-':'+';
+				
+					const item1 = Math.floor(Math.random()*101);
+					const item2 = Math.floor(Math.random()*101);
+
+					const express = item1+" "+op+" "+item2+ " = ?";
+					const crrectAnswer = op=='+'?item1+item2:item1-item2;
+					if(crrectAnswer<0 || crrectAnswer>100){
+						//超纲
+						return this.addAndSubQuestion();
+					}
+					
+					const pool = [];
+					pool.push(crrectAnswer)
+					while(pool.length<4){
+						const dice =  Math.ceil(Math.random()*(2+1+3+2));
+						
+						let distractor = -1;
+						switch (true){
+							case dice<2:
+								//十位减1（忘记进位）（权重2）
+								distractor = crrectAnswer-10;
+								break;
+							case dice<3:
+								//个位加减1（权重1）
+								if(Math.floor(Math.random()*2) == 0){
+									distractor = crrectAnswer - 1
+								}else{
+									distractor = crrectAnswer + 1
+								}
+								
+							case dice<6:
+								//加法当减法，减法当加法 （权重3）
+								distractor = item1 - item2
+							default:
+								//随机生成一个数 （权重2）
+								distractor = Math.floor(Math.random()*101);
+						}
+						
+						if(distractor<0){
+							//备选项不合法
+							continue;
+						}
+						if(pool.includes(distractor)){
+							//备选项重复
+							continue;
+						}
+						pool.push(distractor);
+					}
+					
+					const shuffledPool = this.shuffle(pool);
+					const crrectIndex = shuffledPool.indexOf(crrectAnswer);
+					const crrectItemCode = String.fromCharCode('A'.charCodeAt(0)+crrectIndex);
+					const options = shuffledPool.map((item,index)=>String.fromCharCode('A'.charCodeAt(0)+index)+". "+item)
+					
+					return {
+						express,
+						options,
+						crrectItemCode
+					}
+					
+				
+			},
+			shuffle(pool){
+				const newPool = [];
+				let index = 0;
+				while(pool.length>0){
+					const index = Math.floor(Math.random()*pool.length);
+					newPool.push(pool[index]);
+					pool.splice(index, 1,);
+				}
+				return newPool;
 			},
 			responseClass(itemCode) {
 			    if(itemCode==this.selectedItemCode){

@@ -51,7 +51,7 @@
 			toMain:function(){
 				
 				uni.navigateTo({
-					url: '/pages/main/main',
+					url: '/pages/main/main?grade='+this.grade,
 					fail: (err) => {
 						console.error('navigateTo fail', err)
 					}
