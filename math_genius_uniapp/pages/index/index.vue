@@ -86,7 +86,7 @@
 		margin-top: 50rpx;
 	}
 	.button-area {
-		margin-bottom: 50rpx;
+		margin-bottom: 150rpx;
 	}
 	.select-grade-area {
 		width: 100%;

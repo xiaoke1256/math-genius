@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content main-content-background">
 		<view id="main" class="main-box" >
 			<view id="head" class="head">
 				<view class="head-items">
@@ -33,7 +33,7 @@
 				</view>
 			</view>
 			
-			<view v-if="!isFinish" class="question-area" >
+			<view v-if="!isFinish&&!isSuccess" class="question-area" >
 				<view class="express-area"><!-- 题干 -->
 					<text>{{express}}</text>
 				</view>
@@ -52,6 +52,14 @@
 				<view class="button-area">
 					<u-button @click="reStart" type="primary">再来一局</u-button>
 					<u-button @click="toHome">返回首页</u-button>
+				</view>
+			</view>
+			
+			<view v-if="isSuccess" class="success-page">
+				<text class="title">{{successMsg}}</text><!--或者恭“喜你，完成了所有关卡！”-->
+				<view class="button-area">
+					<u-button type="success">下一关</u-button>
+					<u-button type="success">重新开始</u-button>
 				</view>
 			</view>
 			
@@ -89,7 +97,9 @@
 				crrectItemCode:'C',
 				selectedItemCode:'',
 				isFinish:false,
-				finishReason:''
+				finishReason:'',
+				isSuccess:false,
+				successMsg:'恭喜你，通关啦！'
 			}
 		},
 		onLoad(options) {
@@ -103,6 +113,7 @@
 			//清除定时器
 			if(interval){
 				clearInterval(interval);
+				interval = null;
 			}
 		},
 		methods: {
@@ -155,9 +166,23 @@
 					if(this.countdown<=0){
 						this.finishReason='时间到'
 					}
+					//停止计时
+					if(interval){
+						clearInterval(interval);
+						interval = null;
+					}
+					
 					this.isFinish=true;
 				}
 				//如果进度达到100%,显示升级界面
+				if(this.done>=this.totalQustions){
+					this.isSuccess=true;
+					if(this.level>=20){//总共只有20关
+						this.successMsg = '喜你，完成了所有关卡！';
+					}else{
+						this.successMsg = '恭喜你，通关啦！';
+					}
+				}
 				
 				const {express,options,crrectItemCode} = generateQuestion(this.grade,this.level);
 				console.log("express,options,crrectItemCode:",express,options,crrectItemCode);
@@ -234,7 +259,8 @@
 				this.combo=0;
 				this.score=0;
 				this.nextQuestion(this.grade);
-				//TODO 启动倒计时
+				//启动倒计时
+				this.startCountDown();
 				this.isFinish=false;
 			}
 		
@@ -251,6 +277,8 @@
 <style lang="scss" >
 	.content {
 		justify-content: center;
+	}
+	.main-content-background{
 		background-color: aquamarine;
 	}
 	.main-box{
@@ -304,6 +332,7 @@
 		.title,.score{
 			font-size: 2rem;
 			font-weight: 600;
+			color: black;
 		}
 		.button-area{
 			margin: 30rpx;
@@ -314,6 +343,26 @@
 			u-button{
 				width: 50%;
 			}
+		}
+	}
+	.success-page{
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		font-size: 1.2rem;
+		.title{
+			font-size: 2rem;
+			font-weight: 600;
+			color: $u-success-dark;
+		}
+		.button-area{
+			margin: 30rpx;
+			width: 80%;
+			display: flex;
+			flex-direction: row;
+			gap: 20rpx;
 		}
 	}
 	.express-area{
