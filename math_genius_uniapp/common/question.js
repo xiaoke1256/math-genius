@@ -9,7 +9,7 @@ function generateQuestion(grade, level) {
 
 /*100以内加减法*/
 function addAndSubQuestion() {
-	const op = Math.ceil(Math.random()*2)==0?'-':'+';
+	const op = Math.floor(Math.random()*2)==0?'-':'+';
 	
 	const item1 = Math.floor(Math.random()*101);
 	const item2 = Math.floor(Math.random()*101);
@@ -39,10 +39,15 @@ function addAndSubQuestion() {
 				}else{
 					distractor = crrectAnswer + 1
 				}
-				
+				break;
 			case dice<6:
 				//加法当减法，减法当加法 （权重3）
-				distractor = item1 - item2
+				if(op==='+'){
+					distractor = item1 - item2
+				}else{
+					distractor = item1 + item2
+				}
+				break;	
 			default:
 				//随机生成一个数 （权重2）
 				distractor = Math.floor(Math.random()*101);

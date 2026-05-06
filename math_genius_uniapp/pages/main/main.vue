@@ -58,8 +58,8 @@
 			<view v-if="isSuccess" class="success-page">
 				<text class="title">{{successMsg}}</text><!--或者恭“喜你，完成了所有关卡！”-->
 				<view class="button-area">
-					<u-button type="success">下一关</u-button>
-					<u-button type="success">重新开始</u-button>
+					<u-button v-if="!isAllLevelCompleted" type="success">下一关</u-button>
+					<u-button v-if="isAllLevelCompleted" type="success">重新开始</u-button>
 				</view>
 			</view>
 			
@@ -86,6 +86,7 @@
 				btnEnable:true,
 				grade:'',
 				level:1,
+				allLevelCont:20,
 				done:0,
 				totalQustions:8,
 				countdown:70,
@@ -177,10 +178,14 @@
 				//如果进度达到100%,显示升级界面
 				if(this.done>=this.totalQustions){
 					this.isSuccess=true;
-					if(this.level>=20){//总共只有20关
+					if(this.level>=this.allLevelCont){
 						this.successMsg = '喜你，完成了所有关卡！';
 					}else{
 						this.successMsg = '恭喜你，通关啦！';
+					}
+					if(interval){
+						clearInterval(interval);
+						interval = null;
 					}
 				}
 				
@@ -268,6 +273,9 @@
 		computed: {
 		  	progress(){
 				return Math.floor(this.done/this.totalQustions*100);
+			},
+			isAllLevelCompleted(){
+				return this.level>=this.allLevelCont;
 			}
 		}
 		            
