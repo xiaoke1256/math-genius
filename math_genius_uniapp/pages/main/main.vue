@@ -66,6 +66,8 @@
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
 	import {generateQuestion} from "../../common/question"
 	
+	let interval = null;
+	
 	export default {
 		components: {
 			'u-button':UButton,
@@ -94,12 +96,14 @@
 			this.grade = options.grade;
 			console.log("this.grade:"+this.grade);
 			this.nextQuestion(this.grade);
-			//TODO 启动倒计时
-			
+			//启动倒计时
+			this.startCountDown();
 		},
 		onUnload(){
-			//TODO清除定时器
-			
+			//清除定时器
+			if(interval){
+				clearInterval(interval);
+			}
 		},
 		methods: {
 			onSelectItem: function(event){
@@ -198,6 +202,22 @@
 				}else{
 					return '';
 				}
+			},
+			doCountDown(){
+				this.countdown--;
+				if(this.countdown==0){
+					clearInterval(interval);
+					interval = null;
+					//显示结束页面
+					this.finishReason='时间到'
+					this.isFinish=true;
+				}
+			},
+			startCountDown(){
+				if(interval){
+					clearInterval(interval);
+				}
+				interval = setInterval(this.doCountDown,1000);
 			},
 			toHome(){
 				uni.navigateTo({
