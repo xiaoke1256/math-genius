@@ -1,3 +1,5 @@
+//题库
+
 function generateQuestion(grade, level) {
 	//中年级 — 100以内加减法；后续：表内乘除、带余除法、三四则混合
 	const { express, options, crrectItemCode } = addAndSubQuestion();
@@ -67,8 +69,6 @@ function addAndSubQuestion() {
 		options,
 		crrectItemCode
 	}
-		
-	
 }
 function shuffle(pool){
 	const newPool = [];

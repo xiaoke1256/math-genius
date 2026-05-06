@@ -1,54 +1,63 @@
 <template>
 	<view class="content">
-		<view id="head" class="head">
-			<view class="head-items">
-				<view class="item" >
-					<view class="item-head" >关卡</view>
-					<view class="item-value" >{{level}}</view>
+		<view id="main" class="main-box" >
+			<view id="head" class="head">
+				<view class="head-items">
+					<view class="item" >
+						<view class="item-head" >关卡</view>
+						<view class="item-value" >{{level}}</view>
+					</view>
+					<view class="item" >
+						<view class="item-head" >进度</view>
+						<view class="item-value" >{{done}}/{{totalQustions}}</view>
+					</view>
+					<view class="item" >
+						<view class="item-head" >时间</view>
+						<view class="item-value" >{{countdown}}s</view>
+					</view>
+					<view class="item" >
+						<view class="item-head" >生命</view>
+						<view class="item-value" >{{hp}}</view>
+					</view>
+					<view class="item" >
+						<view class="item-head" >连击</view>
+						<view class="item-value" >{{combo}}</view>
+					</view>
+					<view class="item" >
+						<view class="item-head" >得分</view>
+						<view class="item-value" >{{score}}</view>
+					</view>
 				</view>
-				<view class="item" >
-					<view class="item-head" >进度</view>
-					<view class="item-value" >{{done}}/{{totalQustions}}</view>
-				</view>
-				<view class="item" >
-					<view class="item-head" >时间</view>
-					<view class="item-value" >{{countdown}}s</view>
-				</view>
-				<view class="item" >
-					<view class="item-head" >生命</view>
-					<view class="item-value" >{{hp}}</view>
-				</view>
-				<view class="item" >
-					<view class="item-head" >连击</view>
-					<view class="item-value" >{{combo}}</view>
-				</view>
-				<view class="item" >
-					<view class="item-head" >得分</view>
-					<view class="item-value" >{{score}}</view>
+				<view class="progress-area">
+					<u-line-progress :percentage="progress" activeColor="#398ade"></u-line-progress>
 				</view>
 			</view>
-			<view class="progress-area">
-				<u-line-progress :percentage="progress" activeColor="#398ade"></u-line-progress>
+			
+			<view v-if="!isFinish" class="question-area" >
+				<view class="express-area"><!-- 题干 -->
+					<text>{{express}}</text>
+				</view>
+				<view class="item-area">
+					<u-button v-for="option in options" :key="option.charAt(0)" :class="['button',responseClass(option.charAt(0))]" :data-item-code="option.charAt(0)" @click="onSelectItem">{{option}}</u-button>
+					
+				</view>
 			</view>
+			
+			<view v-if="isFinish" class="finish-page">
+				<text class="title">本局结束</text>
+				<text>{{finishReason}}</text><!--结束原因-->
+				<text class="score">{{score}}分</text><!--分数-->
+				<text>称号：{{}}</text><!--称号-->
+				<text>最高关卡：第{{level}}关</text>
+				<view class="button-area">
+					<u-button @click="reStart" type="primary">再来一局</u-button>
+					<u-button @click="toHome">返回首页</u-button>
+				</view>
+			</view>
+			
+			
+			<view style="height: 20%;" />
 		</view>
-		
-		<view class="question-area" >
-			<view class="express-area"><!-- 题干 -->
-				<text>{{express}}</text>
-			</view>
-			<view class="item-area">
-				<u-button v-for="option in options" :key="option.charAt(0)" :class="['button',responseClass(option.charAt(0))]" :data-item-code="option.charAt(0)" @click="onSelectItem">{{option}}</u-button>
-				<!--
-				<u-button :class="['button',responseClass('A')]" data-item-code="A" @click="onSelectItem">A.  3</u-button>
-				<u-button :class="['button',responseClass('B')]" data-item-code="B" @click="onSelectItem">B.  2</u-button>
-				<u-button :class="['button',responseClass('C')]" data-item-code="C" @click="onSelectItem">C.  4</u-button>
-				<u-button :class="['button',responseClass('D')]" data-item-code="D" @click="onSelectItem">D.  6</u-button>
-				-->
-			</view>
-		</view>
-		
-		
-		<view style="height: 5vh;" />
 	</view>
 </template>
 
@@ -76,13 +85,21 @@
 				express:'',
 				options:[],
 				crrectItemCode:'C',
-				selectedItemCode:''
+				selectedItemCode:'',
+				isFinish:false,
+				finishReason:''
 			}
 		},
 		onLoad(options) {
 			this.grade = options.grade;
-			console.log("this.grade:"+this.grade)
-			this.nextQuestion(this.grade)
+			console.log("this.grade:"+this.grade);
+			this.nextQuestion(this.grade);
+			//TODO 启动倒计时
+			
+		},
+		onUnload(){
+			//TODO清除定时器
+			
 		},
 		methods: {
 			onSelectItem: function(event){
@@ -93,7 +110,8 @@
 				this.btnEnable = false;
 				const itemCode = event.currentTarget.dataset.itemCode;
 				console.log("event.currentTarget.dataset.itemCode:",event.currentTarget.dataset.itemCode);
-				if(this.crrectItemCode === itemCode){
+				const isCorrected = (this.crrectItemCode === itemCode);
+				if(isCorrected){
 					console.log("true");
 				}else{
 					console.log("false");
@@ -101,10 +119,13 @@
 				//显示错误样式半秒钟，然后消失
 				this.selectedItemCode = itemCode;
 				setTimeout(()=>{this.selectedItemCode=''},500);
+				//播放错误或成功的动画
+				this.playAnimate(isCorrected);
+				
 				//更新成绩
-				this.refreshScore(this.crrectItemCode === itemCode);
+				this.refreshScore(isCorrected);
 				//半秒后进入下一题，或下一关
-				setTimeout(()=>{this.nextQuestion(this.grade)},501);
+				setTimeout(()=>{this.nextQuestion()},501);
 				
 				
 			},
@@ -123,6 +144,15 @@
 			},
 			nextQuestion() {
 				//如果时间或生命值耗尽，提示游戏结束
+				if(this.hp<=0 || this.countdown<=0){
+					if(this.hp<=0){
+						this.finishReason='生命值耗尽'
+					}
+					if(this.countdown<=0){
+						this.finishReason='时间到'
+					}
+					this.isFinish=true;
+				}
 				//如果进度达到100%,显示升级界面
 				
 				const {express,options,crrectItemCode} = generateQuestion(this.grade,this.level);
@@ -132,6 +162,30 @@
 				this.crrectItemCode=crrectItemCode;
 				
 				this.btnEnable=true;
+			},
+			
+			playAnimate(isCorrect){
+				const mainBox = document.querySelector('.main-box');
+				if(isCorrect){
+					mainBox.animate([
+					  { transform: 'scale(1)' }, // 初始状态，无放大
+					  { transform: 'scale(1.1)' }, // 目标状态，放大10%
+					  { transform: 'scale(1)' } // 回到初始状态
+					], {
+					  duration: 500, // 持续时间0.5秒
+					  iterations: 1 // 播放次数，1表示播放一次后停止
+					});
+				}else{
+					mainBox.animate([
+					  { transform: 'translateX(0)' }, // 初始状态，无位移
+					  { transform: 'translateX(-10px)' }, // 目标状态，向左移动10px
+					  { transform: 'translateX(10px)' }, // 目标状态，向右移动10px
+					  { transform: 'translateX(0)' } // 回到初始状态
+					], {
+					  duration: 500, // 持续时间0.5秒
+					  iterations: 1 // 播放次数，1表示播放一次后停止
+					});
+				}
 			},
 			
 			responseClass(itemCode) {
@@ -144,6 +198,24 @@
 				}else{
 					return '';
 				}
+			},
+			toHome(){
+				uni.navigateTo({
+					url: '/pages/index/index',
+					fail: (err) => {
+						console.error('navigateTo fail', err)
+					}
+				})
+			},
+			reStart(){
+				this.done=0;
+				this.countdown=70;
+				this.hp=3;
+				this.combo=0;
+				this.score=0;
+				this.nextQuestion(this.grade);
+				//TODO 启动倒计时
+				this.isFinish=false;
 			}
 		
 		},
@@ -157,7 +229,21 @@
 </script>
 
 <style lang="scss" >
+	.content {
+		justify-content: center;
+		background-color: aquamarine;
+	}
+	.main-box{
+		width: 80%;
+		height: 80vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		background-color: white;
+		border-radius: 60rpx;
+	}
 	.head{
+		margin-top: 30rpx;
 		width: 100%;
 	}
 	.head-items{
@@ -187,6 +273,28 @@
 		padding-left: 20rpx;
 		padding-right: 20rpx;
 		box-sizing: border-box;
+	}
+	.finish-page{
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		font-size: 1.2rem;
+		.title,.score{
+			font-size: 2rem;
+			font-weight: 600;
+		}
+		.button-area{
+			margin: 30rpx;
+			width: 80%;
+			display: flex;
+			flex-direction: row;
+			gap: 20rpx;
+			u-button{
+				width: 50%;
+			}
+		}
 	}
 	.express-area{
 		text-align: center;

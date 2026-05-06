@@ -13,7 +13,7 @@
 			<u-button :type="grade=='5-6'?'primary':'info'" data-grade="5-6" @click="onSelect">5-6年级</u-button>
 		</view>
 		<view class="button-area">
-			<button @click="toMain">{{startText}}</button>
+			<u-button type="primary" :plain="true" @click="toMain">{{startText}}</u-button>
 		</view>
 	</view>
 </template>
