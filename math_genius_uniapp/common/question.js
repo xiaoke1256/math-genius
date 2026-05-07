@@ -103,7 +103,7 @@ function simpleMul(){
 	const item1 = Math.floor(Math.random()*9);
 	const item2 = Math.floor(Math.random()*9);
 	
-	const express = item1+" x "+item2+ " = ?";
+	const express = item1+" ⨯ "+item2+ " = ?";
 	const crrectAnswer = item1*item2
 	
 	const pool = [];
@@ -162,7 +162,7 @@ function simpleDiv(){
 	const dividend = item1 * item2;
 	const divisor = item1;
 	const quotient = item2;
-	const express = dividend + " &divide; " + divisor + " = ?";
+	const express = dividend + " ÷ " + divisor + " = ?";
 	
 	console.log("express:",express)
 	
