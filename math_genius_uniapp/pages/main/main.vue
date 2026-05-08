@@ -58,8 +58,8 @@
 			<view v-if="isSuccess" class="success-page">
 				<text class="title">{{successMsg}}</text><!--或者恭“喜你，完成了所有关卡！”-->
 				<view class="button-area">
-					<u-button v-if="!isAllLevelCompleted" type="success">下一关</u-button>
-					<u-button v-if="isAllLevelCompleted" type="success">重新开始</u-button>
+					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
+					<u-button v-if="isAllLevelCompleted" @click="toFirstLevel" type="success">重新开始</u-button>
 				</view>
 			</view>
 			
@@ -266,6 +266,36 @@
 				this.nextQuestion(this.grade);
 				//启动倒计时
 				this.startCountDown();
+				this.isFinish=false;
+			},
+			toNextLevel(){
+				this.level++;
+				this.done=0;
+				this.countdown=70;
+				if(this.combo>=5 && this.hp<3 ){
+					//达成5连击
+					this.hp++;
+				}
+				//this.hp=3;
+				this.combo=0;
+				this.score=0;
+				this.nextQuestion(this.grade);
+				//启动倒计时
+				this.startCountDown();
+				this.isSuccess=false;
+				this.isFinish=false;
+			},
+			toFirstLevel(){
+				this.level=1;
+				this.done=0;
+				this.countdown=70;
+				this.hp=3;
+				this.combo=0;
+				this.score=0;
+				this.nextQuestion(this.grade);
+				//启动倒计时
+				this.startCountDown();
+				this.isSuccess=false;
 				this.isFinish=false;
 			}
 		
