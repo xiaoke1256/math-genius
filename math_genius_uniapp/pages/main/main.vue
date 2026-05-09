@@ -72,7 +72,7 @@
 <script>
 	import ULineProgress from "uview-plus/components/u-line-progress/u-line-progress.vue";
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
-	import {generateQuestion} from "../../common/question"
+	import {generateQuestion} from "../../js/question"
 	
 	let interval = null;
 	

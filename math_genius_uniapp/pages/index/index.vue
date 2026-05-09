@@ -1,20 +1,30 @@
 <template>
-	<view class="content">
-		<view class="text-area">
-			<text class="title"><h1>{{title}}</h1></text>
-		</view>
-		<view class="select-grade-area">
-			<view class="sub-title">
-				<text>选择年级</text>
+	<view class="page-wrap">
+		<view class="content">
+			<view class="text-area">
+				<text class="title"><h1>{{title}}</h1></text>
 			</view>
-			
-			<u-button :type="grade=='1-2'?'primary':'info'" data-grade="1-2" @click="onSelect">1-2年级</u-button>
-			<u-button :type="grade=='3-4'?'primary':'info'" data-grade="3-4" @click="onSelect">3-4年级</u-button>
-			<u-button :type="grade=='5-6'?'primary':'info'" data-grade="5-6" @click="onSelect">5-6年级</u-button>
+			<view class="select-grade-area">
+				<view class="sub-title">
+					<text>选择年级</text>
+				</view>
+
+				<u-button :type="grade=='1-2'?'primary':'info'" data-grade="1-2" @click="onSelect">1-2年级</u-button>
+				<u-button :type="grade=='3-4'?'primary':'info'" data-grade="3-4" @click="onSelect">3-4年级</u-button>
+				<u-button :type="grade=='5-6'?'primary':'info'" data-grade="5-6" @click="onSelect">5-6年级</u-button>
+			</view>
+			<view class="button-area">
+				<u-button type="primary" :plain="true" @click="toMain">{{startText}}</u-button>
+			</view>
 		</view>
-		<view class="button-area">
-			<u-button type="primary" :plain="true" @click="toMain">{{startText}}</u-button>
-		</view>
+		<u-action-sheet
+			v-model:show="show"
+			:actions="list"
+			:round="14"
+			:close-on-click-overlay="true"
+			:close-on-click-action="true"
+			cancel-text="取消"
+		/>
 	</view>
 </template>
 
@@ -22,10 +32,12 @@
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
 	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
-	
+	import UActionSheet from 'uview-plus/components/u-action-sheet/u-action-sheet.vue'
+
 	export default {
 		components: {
 			UButton,
+			'u-action-sheet': UActionSheet,
 			'up-icon': UIcon,
 			'u-loading-icon': ULoadingIcon
 		},
@@ -35,11 +47,15 @@
 				startText:'开始闯关',
 				grade:'1-2',
 				show: false,
-				list: []
+				list: [{name:'选项1'}]
 			}
 		},
 		onLoad() {
 
+		},
+		onNavigationBarButtonTap(option){
+			console.log("onNavigationBarButtonTap:",option);
+			this.show = true;
 		},
 		methods: {
 			onSelect: function(event){
@@ -63,6 +79,13 @@
 </script>
 
 <style>
+	.page-wrap {
+		min-height: 100%;
+		height: 100%;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
 	.content {
 		display: flex;
 		flex-direction: column;

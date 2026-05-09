@@ -1,7 +1,11 @@
 {
 	"easycom": {
-		"^up-(.*)": "@/node_modules/uview-plus/components/u-$1/u-$1.vue",
-		"^u-(.*)": "@/node_modules/uview-plus/components/u-$1/u-$1.vue"
+		"autoscan": true,
+		"custom": {
+			"^u--(.*)": "@/node_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "@/node_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "@/node_modules/uview-plus/components/u-$1/u-$1.vue"
+		}
 	},
 	"pages": [
 		{
@@ -21,7 +25,13 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"titleNView":{
+				/*"type": "transparent",*/
+				"buttons":[{"type":"menu","onclick": "()=>{console.log('onNavigationBarButtonTap',e)}"}]
+			}
+		}
 	},
 	"uniIdRouter": {}
 }
