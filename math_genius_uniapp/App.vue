@@ -19,7 +19,12 @@
 	uni-page-body,html,body{
 		height: 100%;  
 	}
-	
+	.page-wrap {
+		min-height: 100%;
+		height: 100%;
+		width: 100%;
+		box-sizing: border-box;
+	}
 	.content {
 		display: flex;
 		flex-direction: column;

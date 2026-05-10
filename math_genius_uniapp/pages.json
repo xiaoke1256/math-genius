@@ -11,7 +11,13 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "闯关小达人"
+				"navigationBarTitleText": "闯关小达人",
+				"app-plus": {
+					"titleNView":{
+						/*"type": "transparent",*/
+						"buttons":[{"type":"menu"}]
+					}
+				}
 			}
 		},
 		{
@@ -25,13 +31,7 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8",
-		"app-plus": {
-			"titleNView":{
-				/*"type": "transparent",*/
-				"buttons":[{"type":"menu","onclick": "()=>{console.log('onNavigationBarButtonTap',e)}"}]
-			}
-		}
+		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}
 }

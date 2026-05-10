@@ -17,14 +17,7 @@
 				<u-button type="primary" :plain="true" @click="toMain">{{startText}}</u-button>
 			</view>
 		</view>
-		<u-action-sheet
-			v-model:show="show"
-			:actions="list"
-			:round="14"
-			:close-on-click-overlay="true"
-			:close-on-click-action="true"
-			cancel-text="取消"
-		/>
+		<sys-menu ref="sysMenu" />
 	</view>
 </template>
 
@@ -32,30 +25,24 @@
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
 	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
-	import UActionSheet from 'uview-plus/components/u-action-sheet/u-action-sheet.vue'
+	import Menu from '/components/menu.vue'
 
 	export default {
 		components: {
 			UButton,
-			'u-action-sheet': UActionSheet,
 			'up-icon': UIcon,
-			'u-loading-icon': ULoadingIcon
+			'u-loading-icon': ULoadingIcon,
+			'sys-menu':Menu
 		},
 		data() {
 			return {
 				title: '数学闯关小达人',
 				startText:'开始闯关',
-				grade:'1-2',
-				show: false,
-				list: [{name:'选项1'}]
+				grade:'1-2'
 			}
 		},
 		onLoad() {
 
-		},
-		onNavigationBarButtonTap(option){
-			console.log("onNavigationBarButtonTap:",option);
-			this.show = true;
 		},
 		methods: {
 			onSelect: function(event){
@@ -79,13 +66,6 @@
 </script>
 
 <style>
-	.page-wrap {
-		min-height: 100%;
-		height: 100%;
-		width: 100%;
-		box-sizing: border-box;
-	}
-
 	.content {
 		display: flex;
 		flex-direction: column;
