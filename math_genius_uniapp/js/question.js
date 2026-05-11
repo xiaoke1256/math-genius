@@ -171,6 +171,7 @@ function simpleDiv(){
 	const pool = [];
 	pool.push(crrectAnswer)
 	
+	let times = 0;
 	while(pool.length<4){
 		const dice =  Math.ceil(Math.random()*(3+2+5));
 		let distractor = -1;
@@ -190,10 +191,18 @@ function simpleDiv(){
 		
 		if(distractor<0){
 			//备选项不合法
+			console.log("备选项不合法:",distractor);
 			continue;
 		}
 		if(pool.includes(distractor)){
 			//备选项重复
+			times++
+			console.log("备选项重复:",distractor);
+			if(times>20){
+				//超过20次都不能跳出循环
+				console.log("超过20次都不能跳出循环.");
+				return simpleDiv();
+			}
 			continue;
 		}
 		pool.push(distractor);

@@ -56,13 +56,12 @@
 			</view>
 			
 			<view v-if="isSuccess" class="success-page">
-				<text class="title">{{successMsg}}</text><!--或者恭“喜你，完成了所有关卡！”-->
+				<text class="title">{{successMsg}}</text><!--或者“恭喜你，完成了所有关卡！”-->
 				<view class="button-area">
 					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
 					<u-button v-if="isAllLevelCompleted" @click="toFirstLevel" type="success">重新开始</u-button>
 				</view>
 			</view>
-			
 			
 			<view style="height: 20%;" />
 		</view>
@@ -179,7 +178,7 @@
 				if(this.done>=this.totalQustions){
 					this.isSuccess=true;
 					if(this.level>=this.allLevelCont){
-						this.successMsg = '喜你，完成了所有关卡！';
+						this.successMsg = '恭喜你，\n完成了所有关卡！';
 					}else{
 						this.successMsg = '恭喜你，通关啦！';
 					}
@@ -249,6 +248,29 @@
 				}
 				interval = setInterval(this.doCountDown,1000);
 			},
+			changeBgColor(level){
+				const bgColors = 
+					['main-content-background-blue',
+					'main-content-background-darkgreen',
+					'main-content-background-purple',
+					'main-content-background-lightgreen',
+					'main-content-background-yellow',
+					'main-content-background-red'];
+				const contentDev = document.querySelector('.content');
+				const needRemove = [];
+				contentDev.classList.forEach((cls)=>{
+					console.log("cls:",cls)
+					if(cls.startsWith('main-content-background')){
+						needRemove.push(cls);
+					}
+				});
+				console.log("needRemove:",needRemove)
+				if(needRemove && needRemove.length>0){
+					contentDev.classList.remove(needRemove)
+				}
+				const colorClass = bgColors[(level-1)%bgColors.length];
+				contentDev.classList.add(colorClass);
+			},
 			toHome(){
 				uni.navigateTo({
 					url: '/pages/index/index',
@@ -270,6 +292,8 @@
 			},
 			toNextLevel(){
 				this.level++;
+				//背景颜色换一换
+				this.changeBgColor(this.level);
 				this.done=0;
 				this.countdown=70;
 				if(this.combo>=5 && this.hp<3 ){
@@ -287,6 +311,8 @@
 			},
 			toFirstLevel(){
 				this.level=1;
+				//背景颜色换一换
+				this.changeBgColor(this.level);
 				this.done=0;
 				this.countdown=70;
 				this.hp=3;
@@ -317,7 +343,25 @@
 		justify-content: center;
 	}
 	.main-content-background{
-		background-color: aquamarine;
+		background-color: #32cdff;
+	}
+	.main-content-background-blue {
+		background-color: #32cdff;
+	}
+	.main-content-background-darkgreen {
+		background-color: #527f76;
+	}
+	.main-content-background-purple {
+		background-color: #9932cd;
+	}
+	.main-content-background-lightgreen {
+		background-color: #5f9f9f;
+	}
+	.main-content-background-yellow {
+		background-color: #b5a642;
+	}
+	.main-content-background-red {
+		background-color: #dd6666;
 	}
 	.main-box{
 		width: 80%;
@@ -393,6 +437,7 @@
 		.title{
 			font-size: 2rem;
 			font-weight: 600;
+			white-space: pre-line;
 			color: $u-success-dark;
 		}
 		.button-area{
