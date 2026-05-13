@@ -24,7 +24,7 @@
 		data() {
 			return {
 				show:false,
-				list:[{name:'登录'},{name:'达人榜'},{name:'我要吐槽'}]
+				list:[{name:'关于'},{name:'错题集'},{name:'我要吐槽'}]
 			}
 		},
 		mounted(){

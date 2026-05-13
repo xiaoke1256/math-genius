@@ -1,6 +1,6 @@
 <template>
-	<view class="content main-content-background">
-		<view id="main" class="main-box" >
+	<view :class="['content',bgColor] ">
+		<view id="main" ref="mainBox" :animation="animationData" class="main-box" >
 			<view id="head" class="head">
 				<view class="head-items">
 					<view class="item" >
@@ -52,6 +52,7 @@
 				<view class="button-area">
 					<u-button @click="reStart" type="primary">再来一局</u-button>
 					<u-button @click="toHome">返回首页</u-button>
+					<!--错题回顾-->
 				</view>
 			</view>
 			
@@ -60,6 +61,7 @@
 				<view class="button-area">
 					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
 					<u-button v-if="isAllLevelCompleted" @click="toFirstLevel" type="success">重新开始</u-button>
+					<!--错题回顾-->
 				</view>
 			</view>
 			
@@ -88,7 +90,7 @@
 				allLevelCont:20,
 				done:0,
 				totalQustions:8,
-				countdown:70,
+				countdown:45,
 				hp:3,
 				combo:0,
 				score:0,
@@ -99,7 +101,9 @@
 				isFinish:false,
 				finishReason:'',
 				isSuccess:false,
-				successMsg:'恭喜你，通关啦！'
+				successMsg:'恭喜你，通关啦！',
+				bgColor:'main-content-background',
+				animationData: {}
 			}
 		},
 		onLoad(options) {
@@ -140,7 +144,7 @@
 				//更新成绩
 				this.refreshScore(isCorrected);
 				//半秒后进入下一题，或下一关
-				setTimeout(()=>{this.nextQuestion()},501);
+				setTimeout(()=>{this.nextQuestion();this.btnEnable},501);
 				
 				
 			},
@@ -198,26 +202,29 @@
 			},
 			
 			playAnimate(isCorrect){
-				const mainBox = document.querySelector('.main-box');
-				if(isCorrect){
-					mainBox.animate([
-					  { transform: 'scale(1)' }, // 初始状态，无放大
-					  { transform: 'scale(1.1)' }, // 目标状态，放大10%
-					  { transform: 'scale(1)' } // 回到初始状态
-					], {
-					  duration: 500, // 持续时间0.5秒
-					  iterations: 1 // 播放次数，1表示播放一次后停止
-					});
-				}else{
-					mainBox.animate([
-					  { transform: 'translateX(0)' }, // 初始状态，无位移
-					  { transform: 'translateX(-10px)' }, // 目标状态，向左移动10px
-					  { transform: 'translateX(10px)' }, // 目标状态，向右移动10px
-					  { transform: 'translateX(0)' } // 回到初始状态
-					], {
-					  duration: 500, // 持续时间0.5秒
-					  iterations: 1 // 播放次数，1表示播放一次后停止
-					});
+				try{
+					//const mainBox = this.$refs.mainBox;
+					if(isCorrect){
+						const animation = uni.createAnimation({ // 使用uni.createAnimation创建动画实例
+							duration: 250, // 每个step动画持续时间，单位ms
+							timingFunction: 'ease', // 动画的效果
+						});
+						animation.scale(1.1, 1.1).step(); // 先放大，生成动画数据
+						animation.scale(1, 1).step(); // 返回到原始状态
+						this.animationData = animation.export(); // 
+					}else{
+						const animation = uni.createAnimation({ // 使用uni.createAnimation创建动画实例
+							duration: 125, // 每个step动画持续时间，单位ms
+							timingFunction: 'ease', // 动画的效果
+						});
+						animation.translateX(-10).step({duration‌:125});
+						animation.translateX(10).step({duration‌:250});
+						animation.translateX(0).step({duration‌:125});
+						this.animationData = animation.export();
+					}
+				}catch(e){
+					//播放动画异常不应该影响其他逻辑
+					console.error("some error happen when play animate:",e);
 				}
 			},
 			
@@ -256,20 +263,7 @@
 					'main-content-background-lightgreen',
 					'main-content-background-yellow',
 					'main-content-background-red'];
-				const contentDev = document.querySelector('.content');
-				const needRemove = [];
-				contentDev.classList.forEach((cls)=>{
-					console.log("cls:",cls)
-					if(cls.startsWith('main-content-background')){
-						needRemove.push(cls);
-					}
-				});
-				console.log("needRemove:",needRemove)
-				if(needRemove && needRemove.length>0){
-					contentDev.classList.remove(needRemove)
-				}
-				const colorClass = bgColors[(level-1)%bgColors.length];
-				contentDev.classList.add(colorClass);
+				this.bgColor = bgColors[(level-1)%bgColors.length];
 			},
 			toHome(){
 				uni.navigateTo({
@@ -437,7 +431,7 @@
 		.title{
 			font-size: 2rem;
 			font-weight: 600;
-			white-space: pre-line;
+			white-space: pre;
 			color: $u-success-dark;
 		}
 		.button-area{
