@@ -21,6 +21,12 @@
 			}
 		},
 		{
+			"path": "pages/index/about",
+			"style": {
+				"navigationBarTitleText": "关于"
+			}
+		},
+		{
 			"path": "pages/main/main",
 			"style": {
 				"navigationBarTitleText": "闯关中..."

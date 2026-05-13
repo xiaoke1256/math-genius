@@ -109,6 +109,6 @@
 	.title {
 		font-family: "Microsoft YaHei", Arial, sans-serif;
 		font-size: 36rpx;
-		color: #8f8f94;
+		color: #747dff;
 	}
 </style>

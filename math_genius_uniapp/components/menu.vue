@@ -6,6 +6,7 @@
 		:close-on-click-overlay="true"
 		:close-on-click-action="true"
 		cancel-text="取消"
+		@select="onClick"
 	/>
 </template>
 
@@ -15,7 +16,10 @@
 	import UActionSheet from 'uview-plus/components/u-action-sheet/u-action-sheet.vue'
 	import { onNavigationBarButtonTap } from '@dcloudio/uni-app'
 	
+	const MENU_NAME_ABOUT = '关于';
+	
 	export default {
+		
 		components: {
 			'u-action-sheet': UActionSheet,
 			'up-icon': UIcon,
@@ -24,7 +28,7 @@
 		data() {
 			return {
 				show:false,
-				list:[{name:'关于'},{name:'错题集'},{name:'我要吐槽'}]
+				list:[{name:MENU_NAME_ABOUT},{name:'错题集'},{name:'我要吐槽'}]
 			}
 		},
 		mounted(){
@@ -40,6 +44,23 @@
 		methods: {
 			open(){
 				this.show = true;
+			},
+			onClick(opt){
+				console.log("opt:",opt);
+				switch (opt.name){
+					case MENU_NAME_ABOUT:
+						console.log("lalala!");
+						uni.navigateTo({
+							url: '/pages/index/about',
+							fail: (err) => {
+								console.error('navigateTo fail', err)
+							}
+						})
+						break;
+					default:
+						console.log('error!');
+				}
+				
 			}
 		},
 		computed: {
