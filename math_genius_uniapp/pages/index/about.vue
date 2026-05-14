@@ -22,7 +22,9 @@ import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
 
 export default {
 	components: {
-		'u-button':UButton
+		'u-button':UButton,
+		'up-icon': UIcon,
+		'u-loading-icon': ULoadingIcon,
 	},
     data() {
         return {

@@ -17,6 +17,7 @@
 	import { onNavigationBarButtonTap } from '@dcloudio/uni-app'
 	
 	const MENU_NAME_ABOUT = '关于';
+	const MENU_NAME_COMPLAIN = '我要吐槽';
 	
 	export default {
 		
@@ -28,7 +29,7 @@
 		data() {
 			return {
 				show:false,
-				list:[{name:MENU_NAME_ABOUT},{name:'错题集'},{name:'我要吐槽'}]
+				list:[{name:MENU_NAME_ABOUT},{name:'错题集'},{name:MENU_NAME_COMPLAIN}]
 			}
 		},
 		mounted(){
@@ -49,13 +50,20 @@
 				console.log("opt:",opt);
 				switch (opt.name){
 					case MENU_NAME_ABOUT:
-						console.log("lalala!");
 						uni.navigateTo({
 							url: '/pages/index/about',
 							fail: (err) => {
 								console.error('navigateTo fail', err)
 							}
 						})
+						break;
+					case MENU_NAME_COMPLAIN:
+						uni.navigateTo({
+							url: '/pages/index/complain',
+							fail: (err) => {
+								console.error('navigateTo fail', err)
+							}
+						});
 						break;
 					default:
 						console.log('error!');

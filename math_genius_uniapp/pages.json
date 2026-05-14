@@ -23,7 +23,13 @@
 		{
 			"path": "pages/index/about",
 			"style": {
-				"navigationBarTitleText": "关于"
+				"navigationBarTitleText": "闯关小达人-关于"
+			}
+		},
+		{
+			"path": "pages/index/complain",
+			"style": {
+				"navigationBarTitleText": "闯关小达人-吐槽"
 			}
 		},
 		{
