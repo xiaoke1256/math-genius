@@ -20,7 +20,9 @@
 		height: 100%;  
 	}
 	.page-wrap {
-		min-height: 100%;
+		//#ifdef MP-WEIXIN
+		min-height: 100vh;
+		//#endif
 		height: 100%;
 		width: 100%;
 		box-sizing: border-box;

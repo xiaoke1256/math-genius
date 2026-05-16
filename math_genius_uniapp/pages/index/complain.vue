@@ -35,9 +35,11 @@
 		},
 		methods: {
 			back(){
-				uni.navigateBack({fail:(e)=>{
-					console.log("e:",e);
-				}});
+				uni.navigateBack({
+					"fail":(e)=>{
+						console.log("e:",e);
+					}
+				});
 			},
 			openInBrowser(url){
 				// #ifdef H5
@@ -52,11 +54,11 @@
 	}
 </script>
 
-<style>
-	.content{
+<style lang="scss">
+	.content {
 		justify-content:center !important;
 	}
-	.info-box{
+	.info-box {
 		border: 1rpx silver solid;
 		border-radius: 40rpx;
 		width: 80%;
@@ -69,21 +71,21 @@
 			margin-top: 20rpx;
 			margin-bottom: 20rpx;
 		}
-		.title{
+		.title {
 			font-family: "Microsoft YaHei", Arial, sans-serif;
 			font-size: 36rpx;
 			color: #747dff;
 		}
-		.link-area{
+		.link-area {
 			margin: 20rpx auto;
 			text-align: left;
 			min-width: 60%;
 			width: 80%;
-			.link{
+			.link {
 				text-decoration: underline;
 				color: #0000ff;
 			}
-			uni-view{
+			uni-view {
 				display: flex;
 				flex-direction: row;
 				white-space: nowrap;
@@ -91,11 +93,11 @@
 		}
 		
 	}
-	.button-area{
+	.button-area {
 		width: 80%;
 		margin-top: 80rpx;
 		margin-bottom: 150rpx;
-		.u-button{
+		.u-button {
 			width: 95%;
 		}
 	}

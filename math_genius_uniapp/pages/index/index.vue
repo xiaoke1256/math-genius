@@ -8,10 +8,9 @@
 				<view class="sub-title">
 					<text>选择年级</text>
 				</view>
-
-				<u-button :type="grade=='1-2'?'primary':'info'" data-grade="1-2" @click="onSelect">1-2年级</u-button>
-				<u-button :type="grade=='3-4'?'primary':'info'" data-grade="3-4" @click="onSelect">3-4年级</u-button>
-				<u-button :type="grade=='5-6'?'primary':'info'" data-grade="5-6" @click="onSelect">5-6年级</u-button>
+				<u-button :type="grade=='1-2'?'primary':'info'" @click="onSelect('1-2')">1-2年级</u-button>
+				<u-button :type="grade=='3-4'?'primary':'info'" @click="onSelect('3-4')">3-4年级</u-button>
+				<u-button :type="grade=='5-6'?'primary':'info'" @click="onSelect('5-6')">5-6年级</u-button>
 			</view>
 			<view class="button-area">
 				<u-button type="primary" :plain="true" @click="toMain">{{startText}}</u-button>
@@ -45,8 +44,7 @@
 
 		},
 		methods: {
-			onSelect: function(event){
-				const selectedGrade = event.currentTarget.dataset.grade;
+			onSelect: function(selectedGrade){
 				console.log("selectedGrade:"+selectedGrade)
 				this.grade = selectedGrade;
 				
@@ -65,15 +63,17 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.content {
+		//#ifdef MP-WEIXIN
+		min-height: 100vh;
+		//#endif
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: space-between;
 		height: 100%;
 	}
-
 	.logo {
 		height: 200rpx;
 		width: 200rpx;
