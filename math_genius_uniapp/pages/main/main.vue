@@ -205,25 +205,28 @@
 			
 			playAnimate(isCorrect){
 				try{
-					//const mainBox = this.$refs.mainBox;
-					if(isCorrect){
-						const animation = uni.createAnimation({ // 使用uni.createAnimation创建动画实例
-							duration: 250, // 每个step动画持续时间，单位ms
-							timingFunction: 'ease', // 动画的效果
-						});
-						animation.scale(1.1, 1.1).step(); // 先放大，生成动画数据
-						animation.scale(1, 1).step(); // 返回到原始状态
-						this.animationData = animation.export(); // 
-					}else{
-						const animation = uni.createAnimation({ // 使用uni.createAnimation创建动画实例
-							duration: 125, // 每个step动画持续时间，单位ms
-							timingFunction: 'ease', // 动画的效果
-						});
-						animation.translateX(-10).step({ duration: 125 });
-						animation.translateX(10).step({ duration: 250 });
-						animation.translateX(0).step({ duration: 125 });
-						this.animationData = animation.export();
-					}
+					// 先清空，否则连续播放时 animation 数据相同，第二次不会触发
+					this.animationData = {};
+					this.$nextTick(() => {
+						if(isCorrect){
+							const animation = uni.createAnimation({
+								duration: 250,
+								timingFunction: 'ease',
+							});
+							animation.scale(1.1, 1.1).step();
+							animation.scale(1, 1).step();
+							this.animationData = animation.export();
+						}else{
+							const animation = uni.createAnimation({
+								duration: 125,
+								timingFunction: 'ease',
+							});
+							animation.translateX(-10).step({ duration: 125 });
+							animation.translateX(10).step({ duration: 250 });
+							animation.translateX(0).step({ duration: 125 });
+							this.animationData = animation.export();
+						}
+					});
 				}catch(e){
 					//播放动画异常不应该影响其他逻辑
 					console.error("some error happen when play animate:",e);
