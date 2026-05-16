@@ -38,7 +38,7 @@
 					<text>{{express}}</text>
 				</view>
 				<view class="item-area">
-					<u-button v-for="option in options" :key="option.charAt(0)" :class="['button',responseClass(option.charAt(0))]" @click="onSelectItem(option.charAt(0))">{{option}}</u-button>
+					<u-button v-for="option in options" :key="option.charAt(0)" :customStyle="optionButtonStyles[option.charAt(0)]" @click="onSelectItem(option.charAt(0))">{{option}}</u-button>
 					
 				</view>
 			</view>
@@ -184,9 +184,9 @@
 				if(this.done>=this.totalQustions){
 					this.isSuccess=true;
 					if(this.level>=this.allLevelCont){
-						this.successMsg = '恭喜你，\n完成了所有关卡！';
-					}else{
 						this.successMsg = '恭喜你，通关啦！';
+					}else{
+						this.successMsg = '恭喜你，闯关成功！';
 					}
 					if(interval){
 						clearInterval(interval);
@@ -219,9 +219,9 @@
 							duration: 125, // 每个step动画持续时间，单位ms
 							timingFunction: 'ease', // 动画的效果
 						});
-						animation.translateX(-10).step({duration‌:125});
-						animation.translateX(10).step({duration‌:250});
-						animation.translateX(0).step({duration‌:125});
+						animation.translateX(-10).step({ duration: 125 });
+						animation.translateX(10).step({ duration: 250 });
+						animation.translateX(0).step({ duration: 125 });
 						this.animationData = animation.export();
 					}
 				}catch(e){
@@ -230,17 +230,6 @@
 				}
 			},
 			
-			responseClass(itemCode) {
-			    if(itemCode==this.selectedItemCode){
-					if(itemCode==this.crrectItemCode){
-						return 'success';
-					}else{
-						return 'danger';
-					}
-				}else{
-					return '';
-				}
-			},
 			doCountDown(){
 				this.countdown--;
 				if(this.countdown==0){
@@ -328,6 +317,33 @@
 			},
 			isAllLevelCompleted(){
 				return this.level>=this.allLevelCont;
+			},
+			optionButtonStyles() {
+				const base = {
+					width: '45%',
+					margin: '0',
+					fontWeight: '600'
+				};
+				const styles = {};
+				(this.options || []).forEach((option) => {
+					const itemCode = option.charAt(0);
+					const style = { ...base };
+					if (itemCode === this.selectedItemCode) {
+						if (itemCode === this.crrectItemCode) {
+							style.backgroundColor = '#f5fff0';
+							style.borderColor = '#5ac725';
+							style.color = '#5ac725';
+						} else {
+							style.backgroundColor = '#fef0f0';
+							style.borderColor = '#f56c6c';
+							style.color = '#f56c6c';
+						}
+						style.borderWidth = '1px';
+						style.borderStyle = 'solid';
+					}
+					styles[itemCode] = style;
+				});
+				return styles;
 			}
 		}
 		            
@@ -460,22 +476,6 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 20rpx;
-		
-		.u-button {
-			width: 45% !important;
-			margin: 0;
-			font-weight: 600;
-		}
-		
-		.danger {
-			background-color: $u-error-light !important;
-			border: 1rpx solid $u-error !important;
-		}
-		
-		.success {
-			background-color: $u-success-light !important;
-			border: 1rpx solid $u-success !important;
-		}
 	}
 	       
 </style>
