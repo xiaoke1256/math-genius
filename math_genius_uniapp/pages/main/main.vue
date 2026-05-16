@@ -38,7 +38,7 @@
 					<text>{{express}}</text>
 				</view>
 				<view class="item-area">
-					<u-button v-for="option in options" :key="option.charAt(0)" :class="['button',responseClass(option.charAt(0))]" :data-item-code="option.charAt(0)" @click="onSelectItem">{{option}}</u-button>
+					<u-button v-for="option in options" :key="option.charAt(0)" :class="['button',responseClass(option.charAt(0))]" @click="onSelectItem(option.charAt(0))">{{option}}</u-button>
 					
 				</view>
 			</view>
@@ -121,14 +121,16 @@
 			}
 		},
 		methods: {
-			onSelectItem: function(event){
+			onSelectItem: function(itemCode){
 				if(!this.btnEnable){
 					//拒绝响应
 					return false;
 				}
 				this.btnEnable = false;
-				const itemCode = event.currentTarget.dataset.itemCode;
-				console.log("event.currentTarget.dataset.itemCode:",event.currentTarget.dataset.itemCode);
+				//const itemCode = event.currentTarget.dataset.itemCode;
+				//console.log("event:",event);
+				//console.log("event.currentTarget.dataset.itemCode:",event.currentTarget.dataset.itemCode);
+				console.log("itemCode:",itemCode);
 				const isCorrected = (this.crrectItemCode === itemCode);
 				if(isCorrected){
 					console.log("true");
@@ -334,6 +336,9 @@
 
 <style lang="scss" >
 	.content {
+		//#ifdef MP-WEIXIN
+		min-height: 100vh;
+		//#endif
 		justify-content: center;
 	}
 	.main-content-background{
@@ -456,8 +461,8 @@
 		justify-content: center;
 		gap: 20rpx;
 		
-		.button {
-			width: 45%;
+		.u-button {
+			width: 45% !important;
 			margin: 0;
 			font-weight: 600;
 		}
