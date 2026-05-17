@@ -33,6 +33,12 @@
 			}
 		},
 		{
+			"path": "pages/webview/webview",
+			"style": {
+				"navigationBarTitleText": "浏览"
+			}
+		},
+		{
 			"path": "pages/main/main",
 			"style": {
 				"navigationBarTitleText": "闯关中..."

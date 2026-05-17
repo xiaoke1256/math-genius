@@ -2,8 +2,12 @@
   <view class="content">
 	<view class="info-box" >
 	    <view class="title-area">
-			<text class="title"><h1>{{title}}</h1></text>
-			<text>({{appName}})</text>
+			<view>
+				<text class="title">{{title}}</text>
+			</view>
+			<view>
+				<text>({{appName}})</text>
+			</view>
 		</view>
 		<view class="version-area">
 			<text class="version" >版本: {{version}}</text>
@@ -19,6 +23,7 @@
 import UButton from 'uview-plus/components/u-button/u-button.vue'
 import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
+import manifest from '@/manifest.json'
 
 export default {
 	components: {
@@ -35,19 +40,31 @@ export default {
         }
     },
     onLoad() {
-	    console.log("uni.getSystemInfoSync().platform:",uni.getSystemInfoSync().platform);
-		if(typeof(plus)==='undefined'){
-			return;
-		}
-        // 获取应用版本信息
-        if(uni.getSystemInfoSync().platform === 'android' || uni.getSystemInfoSync().platform === 'ios') {
-	        const that = this
+        // #ifdef APP-PLUS
+        const platform = uni.getSystemInfoSync().platform
+        if (platform === 'android' || platform === 'ios') {
+            const that = this
             plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {
                 that.version = widgetInfo.version
                 that.name = widgetInfo.name
-			    console.log("that.name:",that.name);
             })
         }
+        // #endif
+        // #ifdef MP-WEIXIN
+        try {
+            const { miniProgram } = uni.getAccountInfoSync()
+            // 正式版有线上版本号；开发版/体验版常为空
+            this.version = miniProgram.version || manifest.versionName
+			console.log("成功从 getAccountInfoSync 获取版本信息 this.version:",this.version);
+        } catch (e) {
+            this.version = manifest.versionName
+        }
+        this.name = manifest.description || manifest.name
+        // #endif
+        // #ifndef APP-PLUS || MP-WEIXIN
+        this.version = manifest.versionName
+        this.name = manifest.description || manifest.name
+        // #endif
     },
 	methods: {
 		back(){
@@ -69,6 +86,9 @@ export default {
 <style  lang="scss">
 	.content{
 		justify-content:center !important;
+		//#ifdef MP-WEIXIN
+		min-height: 100vh;
+		//#endif		
 	}
 	.info-box{
 		border: 1rpx silver solid;

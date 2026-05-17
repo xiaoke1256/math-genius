@@ -45,8 +45,45 @@
 				// #ifdef H5
 				window.open(url, '_blank');
 				// #endif
-				// #ifndef H5
+				// #ifdef APP-PLUS
 				plus.runtime.openURL(url);
+				// #endif
+				// #ifdef MP-WEIXIN
+				uni.showActionSheet({
+					itemList: ['小程序内预览', '复制到浏览器'],
+					success: (res) => {
+						if (res.tapIndex === 0) {
+							uni.navigateTo({
+								url: '/pages/webview/webview?url=' + encodeURIComponent(url),
+								fail: () => {
+									uni.showModal({
+										title: '无法预览',
+										content: '该链接未配置业务域名，可尝试「复制到浏览器」打开',
+										showCancel: false
+									});
+								}
+							});
+						} else if (res.tapIndex === 1) {
+							uni.setClipboardData({
+								data: url,
+								success: () => {
+									uni.showModal({
+										title: '在浏览器中打开',
+										content: '链接已复制。请切换到手机浏览器，在地址栏长按粘贴后访问。',
+										showCancel: false
+									});
+								},
+								fail: () => {
+									uni.showModal({
+										title: '在浏览器中打开',
+										content: url,
+										showCancel: false
+									});
+								}
+							});
+						}
+					}
+				});
 				// #endif
 			}
 			
@@ -57,6 +94,9 @@
 <style lang="scss">
 	.content {
 		justify-content:center !important;
+		//#ifdef MP-WEIXIN
+		min-height: 100vh;
+		//#endif
 	}
 	.info-box {
 		border: 1rpx silver solid;
