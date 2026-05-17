@@ -2,7 +2,7 @@
 	<view class="page-wrap">
 		<view class="content">
 			<view class="text-area">
-				<text class="title"><h1>{{title}}</h1></text>
+				<text class="title">{{ title }}</text>
 			</view>
 			<view class="select-grade-area">
 				<view class="sub-title">
@@ -108,7 +108,8 @@
 
 	.title {
 		font-family: "Microsoft YaHei", Arial, sans-serif;
-		font-size: 36rpx;
+		font-size: 48rpx;
+		font-weight: 600;
 		color: #747dff;
 	}
 </style>

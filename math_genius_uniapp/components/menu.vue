@@ -1,4 +1,13 @@
 <template>
+	<!-- #ifdef MP-WEIXIN -->
+	<view
+		class="wx-nav-menu-btn"
+		:style="wxMenuBtnStyle"
+		@click="open"
+	>
+		<u-icon name="list" color="#333" size="20" />
+	</view>
+	<!-- #endif -->
 	<u-action-sheet
 		v-model:show="show"
 		:actions="list"
@@ -29,20 +38,38 @@
 		data() {
 			return {
 				show:false,
-				list:[{name:MENU_NAME_ABOUT},{name:'错题集'},{name:MENU_NAME_COMPLAIN}]
+				list:[{name:MENU_NAME_ABOUT},{name:'错题集'},{name:MENU_NAME_COMPLAIN}],
+				wxMenuBtnStyle: {}
 			}
 		},
 		mounted(){
-			console.log("mounted;");
+			// #ifndef MP-WEIXIN
 			onNavigationBarButtonTap((e) => {
-			    console.log('点击了导航栏按钮，e：', e)
 				if(e.type=='menu'){
 					this.open();
 				}
-				
 			})
+			// #endif
+			// #ifdef MP-WEIXIN
+			this.$nextTick(() => {
+				setTimeout(() => this.initWxNavMenuBtn(), 50);
+			});
+			// #endif
 		},
 		methods: {
+			initWxNavMenuBtn() {
+				const capsule = uni.getMenuButtonBoundingClientRect();
+				console.log("capsule:",capsule)
+				const gap = 6;
+				const size = capsule.height;
+				// 与胶囊同高、紧贴胶囊左侧，处于导航栏最右上角可放置区域
+				this.wxMenuBtnStyle = {
+					top: `${gap}px`,
+					left: `${capsule.left + capsule.width - size - gap}px`,
+					width: `${size}px`,
+					height: `${size}px`
+				};
+			},
 			open(){
 				this.show = true;
 			},
@@ -79,4 +106,16 @@
 </script>
 
 <style>
+	/* #ifdef MP-WEIXIN */
+	.wx-nav-menu-btn {
+		position: fixed;
+		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		background-color: rgba(255, 255, 255, 0.9);
+		box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+	}
+	/* #endif */
 </style>
