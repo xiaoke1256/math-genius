@@ -14,7 +14,6 @@
 		:round="14"
 		:close-on-click-overlay="true"
 		:close-on-click-action="true"
-		cancel-text="取消"
 		@select="onClick"
 	/>
 </template>
@@ -27,6 +26,8 @@
 	
 	const MENU_NAME_ABOUT = '关于';
 	const MENU_NAME_COMPLAIN = '我要吐槽';
+	const MENU_NAME_CANCEL = '取消';
+	const MENU_TEXT_COLOR = '#303133';
 	
 	export default {
 		
@@ -38,7 +39,13 @@
 		data() {
 			return {
 				show:false,
-				list:[{name:MENU_NAME_ABOUT},{name:'错题集'},{name:MENU_NAME_COMPLAIN}],
+				list:[
+					{name: MENU_NAME_ABOUT, color: MENU_TEXT_COLOR},
+					{name: '错题集', color: MENU_TEXT_COLOR},
+					{name: MENU_NAME_COMPLAIN, color: MENU_TEXT_COLOR},
+					// 真机 u-popup 内 cancel-text 的主题色变量无法解析，须与菜单项一样用 actions.color
+					{name: MENU_NAME_CANCEL, color: MENU_TEXT_COLOR}
+				],
 				wxMenuBtnStyle: {}
 			}
 		},
@@ -75,6 +82,9 @@
 			},
 			onClick(opt){
 				console.log("opt:",opt);
+				if (opt.name === MENU_NAME_CANCEL) {
+					return;
+				}
 				switch (opt.name){
 					case MENU_NAME_ABOUT:
 						uni.navigateTo({
@@ -106,7 +116,15 @@
 </script>
 
 <style>
+	:deep(.u-action-sheet__item-wrap__item__name) {
+		color: #303133 !important;
+	}
+
 	/* #ifdef MP-WEIXIN */
+	:deep(.u-action-sheet .u-reset-button) {
+		color: #303133;
+	}
+
 	.wx-nav-menu-btn {
 		position: fixed;
 		z-index: 9999;
