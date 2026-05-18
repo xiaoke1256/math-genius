@@ -2,17 +2,29 @@
 	<view class="content">
 		<view class="info-box" >
 			<view class="title-area">
+				<!--#ifdef MP-WEIXIN-->
+				<text>请在以下渠道吐槽：</text>
+				<!--#endif-->
+				<!--#ifndef MP-WEIXIN-->
 				<text>请登录以下平台吐槽：</text>
+				<!--#endif-->
 			</view>
 			<view class="link-area">
+				<!--#ifdef MP-WEIXIN-->
 				<view>
-					<text>微博：</text> <text class="link" @click="openInBrowser('https://weibo.com/u/1478889745')">去吐槽</text>
+					&bull; 请在“小程序右上角更多 → 反馈与投诉”中和开发者反馈
+				</view>
+				<!--#endif-->
+				<!--#ifndef MP-WEIXIN-->
+				<view>
+					&bull; <text>微博：</text> <text class="link" @click="openInBrowser('https://weibo.com/u/1478889745')">去吐槽</text>
 				</view>
 				<view>
-					<text>guthub：</text> <text class="link" @click="openInBrowser('https://github.com/xiaoke1256/math-genius/discussions/categories/announcements')" >去吐槽</text>
+					&bull; <text>guthub：</text> <text class="link" @click="openInBrowser('https://github.com/xiaoke1256/math-genius/discussions/categories/announcements')" >去吐槽</text>
 				</view>
+				<!--#endif-->
 				<view>
-					<text>邮箱：</text> <text>xiaoke_1256@sina.com</text>
+					&bull; <text>邮箱：</text> <text>xiaoke_1256@sina.com</text>
 				</view>
 			</view>
 			
