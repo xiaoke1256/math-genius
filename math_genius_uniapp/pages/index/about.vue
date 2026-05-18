@@ -61,7 +61,7 @@ export default {
         }
         this.name = manifest.description || manifest.name
         // #endif
-        // #ifndef APP-PLUS || MP-WEIXIN
+        // #ifdef H5
         this.version = manifest.versionName
         this.name = manifest.description || manifest.name
         // #endif
