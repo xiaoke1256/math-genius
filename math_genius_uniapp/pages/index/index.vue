@@ -2,7 +2,7 @@
 	<view class="page-wrap">
 		<view class="content">
 			<view class="text-area">
-				<image class="text-area-bg" :src="indexBackgroundImage" mode="scaleToFill" />
+				<image class="text-area-bg" :src="indexBackgroundImage" mode="widthFix" />
 				<text class="title">{{ title }}</text>
 			</view>
 			<view class="select-grade-area">
@@ -26,7 +26,7 @@
 	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
 	import Menu from '/components/menu.vue'
-	import indexBackgroundImage from "@/static/banner.svg"
+	import indexBackgroundImage from "@/static/banner.jpeg"
 
 	export default {
 		components: {
@@ -87,16 +87,10 @@
 
 	.text-area {
 		position: relative;
-		display: flex;
-		justify-content: center;
 		margin-top: 50rpx;
 		overflow: hidden;
 		border-radius: 30rpx;
 		width: 80%;
-		height: 35%;
-		//#ifdef MP-WEIXIN
-		min-height: 35vh;
-		//#endif
 	}
 	.button-area {
 		margin-bottom: 150rpx;
@@ -117,21 +111,20 @@
 	}
 
 	.text-area-bg {
-		position: absolute;
-		left: 0;
-		top: 0;
+		display: block;
 		width: 100%;
-		height: 100%;
-		z-index: 0;
 	}
 
 	.title {
-		position: relative;
+		position: absolute;
+		top: 15rpx;
+		left: 0;
+		right: 0;
+		text-align: center;
 		z-index: 1;
 		font-family: "Microsoft YaHei", Arial, sans-serif;
 		font-size: 48rpx;
 		font-weight: 600;
 		color: #747dff;
-		margin-top: 15rpx;
 	}
 </style>
