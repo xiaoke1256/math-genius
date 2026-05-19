@@ -41,7 +41,6 @@
 			}
 		},
 		onLoad() {
-
 		},
 		methods: {
 			onSelect: function(selectedGrade){
@@ -87,6 +86,13 @@
 		display: flex;
 		justify-content: center;
 		margin-top: 50rpx;
+		background-image: url('/static/banner.svg');
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		background-position: center;
+		border-radius: 30rpx;
+		width: 80%;
+		height: 35%;
 	}
 	.button-area {
 		margin-bottom: 150rpx;
@@ -111,5 +117,6 @@
 		font-size: 48rpx;
 		font-weight: 600;
 		color: #747dff;
+		margin-top: 15rpx;
 	}
 </style>
