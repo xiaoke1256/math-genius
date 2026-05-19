@@ -1,7 +1,7 @@
 <template>
 	<view class="page-wrap">
 		<view class="content">
-			<view class="text-area">
+			<view :style="{backgroundImage:`url(${indexBackgroundImage})`}" class="text-area">
 				<text class="title">{{ title }}</text>
 			</view>
 			<view class="select-grade-area">
@@ -25,6 +25,7 @@
 	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
 	import Menu from '/components/menu.vue'
+	import indexBackgroundImage from "@/static/banner.svg"
 
 	export default {
 		components: {
@@ -37,7 +38,8 @@
 			return {
 				title: '数学闯关小达人',
 				startText:'开始闯关',
-				grade:'1-2'
+				grade:'1-2',
+				indexBackgroundImage:indexBackgroundImage
 			}
 		},
 		onLoad() {
@@ -86,13 +88,15 @@
 		display: flex;
 		justify-content: center;
 		margin-top: 50rpx;
-		background-image: url('/static/banner.svg');
 		background-size: 100% 100%;
 		background-repeat: no-repeat;
 		background-position: center;
 		border-radius: 30rpx;
 		width: 80%;
 		height: 35%;
+		//#ifdef MP-WEIXIN
+		min-height: 35vh;
+		//#endif
 	}
 	.button-area {
 		margin-bottom: 150rpx;
