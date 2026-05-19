@@ -1,7 +1,8 @@
 <template>
 	<view class="page-wrap">
 		<view class="content">
-			<view :style="{backgroundImage:`url(${indexBackgroundImage})`}" class="text-area">
+			<view class="text-area">
+				<image class="text-area-bg" :src="indexBackgroundImage" mode="scaleToFill" />
 				<text class="title">{{ title }}</text>
 			</view>
 			<view class="select-grade-area">
@@ -39,7 +40,7 @@
 				title: '数学闯关小达人',
 				startText:'开始闯关',
 				grade:'1-2',
-				indexBackgroundImage:indexBackgroundImage
+				indexBackgroundImage: indexBackgroundImage
 			}
 		},
 		onLoad() {
@@ -85,12 +86,11 @@
 	}
 
 	.text-area {
+		position: relative;
 		display: flex;
 		justify-content: center;
 		margin-top: 50rpx;
-		background-size: 100% 100%;
-		background-repeat: no-repeat;
-		background-position: center;
+		overflow: hidden;
 		border-radius: 30rpx;
 		width: 80%;
 		height: 35%;
@@ -116,7 +116,18 @@
 		font-weight: 600;
 	}
 
+	.text-area-bg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+	}
+
 	.title {
+		position: relative;
+		z-index: 1;
 		font-family: "Microsoft YaHei", Arial, sans-serif;
 		font-size: 48rpx;
 		font-weight: 600;
