@@ -1,9 +1,9 @@
 //题库
 
 function generateQuestion(grade, level) {
-	//中年级 — 100以内加减法；后续：表内乘除、带余除法、三四则混合
+	//中年级 — 100以内加减法、表内乘除、带余除法、整十数乘除
 	let question = {};
-	const dice =  Math.ceil(Math.random()*(3));
+	const dice =  Math.ceil(Math.random()*5);
 	console.log("dice："+dice);
 	switch (true){
 		case dice<=1:
@@ -15,8 +15,13 @@ function generateQuestion(grade, level) {
 		case dice<=3:
 			question = simpleDiv();
 			break;
+		case dice<=4:
+			question = divWithRemainder();
+			break;
+		case dice<=5:
+			question = tensMulDiv();
+			break;
 		default:
-			//默认用加减法
 			question = addAndSubQuestion();
 	}
 	const { express, pool, crrectAnswer } = question;
@@ -214,6 +219,185 @@ function simpleDiv(){
 		crrectAnswer
 	}
 	
+}
+
+/**
+ * 带余数除法（答案含商和余数，如 6……4）
+ */
+function formatDivAnswer(quotient, remainder){
+    if(remainder==0){
+        return quotient+'';
+    }
+	return quotient + "……" + remainder;
+}
+
+function divWithRemainder(){
+	const divisor = Math.floor(Math.random()*8)+2; // 2-9
+	const quotient = Math.floor(Math.random()*8)+1; // 1-9
+	const remainder = Math.floor(Math.random()*(divisor-1))+1; // 1 ~ divisor-1
+	const dividend = divisor * quotient + remainder;
+
+	const express = dividend + " ÷ " + divisor + " = ?";
+	const crrectAnswer = formatDivAnswer(quotient, remainder);
+
+	const pool = [];
+	pool.push(crrectAnswer);
+	let times = 0;
+	while(pool.length<4){
+		const dice = Math.ceil(Math.random()*(3+2+2+3));
+		let distractor = '';
+		switch (true){
+			case dice<=3:
+				// 商和余数位置颠倒（权重3）
+				distractor = formatDivAnswer(remainder, quotient);
+				break;
+			case dice<=5:
+				// 商正确、余数错误（权重2）
+				{
+					const delta = Math.floor(Math.random()*2)===0 ? -1 : 1;
+					if(remainder + delta==0){
+						continue;
+					}
+					distractor = formatDivAnswer(quotient, remainder + delta);
+				}
+				break;
+			case dice<=7:
+				// 余数正确、商错误（权重2）
+				{
+					const delta = Math.floor(Math.random()*2)===0 ? -1 : 1;
+					distractor = formatDivAnswer(quotient + delta, remainder);
+				}
+				break;
+			default:
+				// 当作能整除或随机一对商余（权重3）
+				if(Math.floor(Math.random()*2)===0){
+					distractor = formatDivAnswer(Math.floor(dividend/divisor), 0);
+				}else{
+					const rq = Math.floor(Math.random()*8)+1;
+					const rr = Math.floor(Math.random()*(divisor-1))+1;
+					distractor = formatDivAnswer(rq, rr);
+				}
+		}
+
+
+		const parts = distractor.split('……');
+		const dq = parseInt(parts[0], 10);
+		const dr = parseInt(parts[1], 10);
+		if(dq < 1 || dr < 0 || dr >= divisor){
+			continue;
+		}
+		if(pool.includes(distractor)){
+			times++;
+			if(times>20){
+				return divWithRemainder();
+			}
+			continue;
+		}
+		pool.push(distractor);
+	}
+
+	return { express, pool, crrectAnswer };
+}
+
+/**
+ * 整十数的乘除法
+ */
+function tensMulDiv(){
+	const isMul = Math.floor(Math.random()*2)===0;
+	let express, crrectAnswer, item1, item2;
+
+	if(isMul){
+		if(Math.floor(Math.random()*2)===0){
+			// 整十 × 整十
+			item1 = (Math.floor(Math.random()*9)+1)*10;
+			item2 = (Math.floor(Math.random()*9)+1)*10;
+		}else{
+			// 整十 × 一位数（或一位数 × 整十）
+			item1 = (Math.floor(Math.random()*9)+1)*10;
+			item2 = Math.floor(Math.random()*8)+2;
+			if(Math.floor(Math.random()*2)===0){
+				const tmp = item1;
+				item1 = item2;
+				item2 = tmp;
+			}
+		}
+		express = item1 + " ⨯ " + item2 + " = ?";
+		crrectAnswer = item1 * item2;
+	}else{
+		if(Math.floor(Math.random()*2)===0){
+			// 整十 ÷ 整十
+			item2 = (Math.floor(Math.random()*9)+1)*10;
+			crrectAnswer = Math.floor(Math.random()*8)+2;
+			item1 = item2 * crrectAnswer;
+		}else{
+			// 整十 ÷ 一位数，如 60÷3=2、80÷4=20
+			item2 = Math.floor(Math.random()*8)+2;
+			if(Math.floor(Math.random()*2)===0){
+				crrectAnswer = Math.floor(Math.random()*8)+2;
+				item1 = item2 * crrectAnswer * 10;
+			}else{
+				crrectAnswer = (Math.floor(Math.random()*8)+2)*10;
+				item1 = item2 * crrectAnswer;
+			}
+		}
+		express = item1 + " ÷ " + item2 + " = ?";
+	}
+
+	const pool = [];
+	pool.push(crrectAnswer);
+	let times = 0;
+	while(pool.length<4){
+		const dice = Math.ceil(Math.random()*(3+2+2+3));
+		let distractor = -1;
+		switch (true){
+			case dice<=3:
+				// 漏写或多写一个0（权重3）
+				if(crrectAnswer >= 10){
+					distractor = Math.floor(Math.random()*2)===0
+						? Math.floor(crrectAnswer/10)
+						: crrectAnswer*10;
+				}else{
+					distractor = crrectAnswer*10;
+				}
+				break;
+			case dice<=5:
+				// 当作加法或减法（权重2）
+				if(isMul){
+					distractor = item1 + item2;
+				}else{
+					distractor = Math.abs(item1 - item2);
+				}
+				break;
+			case dice<=7:
+				// 正确答案 ±10 或 ±1（权重2）
+				if(crrectAnswer >= 10){
+					distractor = crrectAnswer + (Math.floor(Math.random()*2)===0 ? -10 : 10);
+				}else{
+					distractor = crrectAnswer + (Math.floor(Math.random()*2)===0 ? -1 : 1);
+				}
+				break;
+			default:
+				distractor = Math.floor(Math.random()*900)+10;
+		}
+
+		if(distractor<=0){
+			continue;
+		}
+		if(pool.includes(distractor)){
+			//备选项重复
+            times++
+            console.log("备选项重复:",distractor);
+            if(times>20){
+                //超过20次都不能跳出循环
+                console.log("超过20次都不能跳出循环.");
+                return tensMulDiv();
+            }
+			continue;
+		}
+		pool.push(distractor);
+	}
+
+	return { express, pool, crrectAnswer };
 }
 
 /**
