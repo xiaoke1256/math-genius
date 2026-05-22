@@ -8,16 +8,31 @@
 			<view class="select-grade-area">
 				<view class="sub-title">
 					<text>选择年级</text>
+					<view class="icon-wrap" @click="showInstruction" >
+                        <u-icon name="question" color="#999" size="20" />
+                    </view>
 				</view>
-				<u-button :type="grade=='1-2'?'primary':'info'" @click="onSelect('1-2')">1-2年级</u-button>
-				<u-button :type="grade=='3-4'?'primary':'info'" @click="onSelect('3-4')">3-4年级</u-button>
-				<u-button :type="grade=='5-6'?'primary':'info'" @click="onSelect('5-6')">5-6年级</u-button>
+				<view class="grade-row">
+					<u-button :type="grade=='1-2'?'primary':'info'" @click="onSelect('1-2')">1-2年级</u-button>
+				</view>
+				<view class="grade-row">
+					<u-button :type="grade=='3-4'?'primary':'info'" @click="onSelect('3-4')">3-4年级</u-button>
+				</view>
+				<view class="grade-row">
+					<u-button :type="grade=='5-6'?'primary':'info'" @click="onSelect('5-6')">5-6年级</u-button>
+				</view>
 			</view>
 			<view class="button-area">
 				<u-button type="primary" :plain="true" @click="toMain">{{startText}}</u-button>
 			</view>
 		</view>
 		<sys-menu ref="sysMenu" />
+		
+		<u-modal :show="showModal" @confirm="this.showModal=false" title="题型说明" >
+			<view class="slot-content">
+				<instruction/>
+			</view>
+		</u-modal>
 	</view>
 </template>
 
@@ -25,22 +40,28 @@
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
 	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
+	import UModal from 'uview-plus/components/u-modal/u-modal.vue'
 	import Menu from '/components/menu.vue'
 	import indexBackgroundImage from "@/static/banner.jpeg"
+	import Instruction from '/pages/index/instruction.vue'
+	
 
 	export default {
 		components: {
 			UButton,
 			'up-icon': UIcon,
 			'u-loading-icon': ULoadingIcon,
-			'sys-menu':Menu
+			'sys-menu':Menu,
+			'u-modal':UModal,
+			'instruction':Instruction
 		},
 		data() {
 			return {
 				title: '数学闯关小达人',
 				startText:'开始闯关',
 				grade:'1-2',
-				indexBackgroundImage: indexBackgroundImage
+				indexBackgroundImage: indexBackgroundImage,
+				showModal:false
 			}
 		},
 		onLoad() {
@@ -58,8 +79,10 @@
 					fail: (err) => {
 						console.error('navigateTo fail', err)
 					}
-				})
-
+				});
+			},
+			showInstruction(){
+				this.showModal = true;
 			}
 		}
 	}
@@ -102,12 +125,30 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;
+		.grade-row{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+
+			.u-button{
+				
+			}
+		}
+		
 	}
 	.sub-title {
 		font-family: "Microsoft YaHei", Arial, sans-serif;
 		margin-left:10rpx;
 		font-size: 1.125rem;
 		font-weight: 600;
+		display: flex;
+        flex-direction: row;
+        gap: 10rpx;
+		align-items: center;
+		.icon-wrap{
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
 	}
 
 	.text-area-bg {
