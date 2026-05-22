@@ -19,7 +19,7 @@
 					<u-button :type="grade=='3-4'?'primary':'info'" @click="onSelect('3-4')">3-4年级</u-button>
 				</view>
 				<view class="grade-row">
-					<u-button :type="grade=='5-6'?'primary':'info'" @click="onSelect('5-6')">5-6年级</u-button>
+					<u-button :disabled="true" :type="grade=='5-6'?'primary':'info'" @click="onSelect('5-6')">5-6年级</u-button>
 				</view>
 			</view>
 			<view class="button-area">
