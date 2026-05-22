@@ -1,28 +1,45 @@
 //题库
 
 function generateQuestion(grade, level) {
-	//中年级 — 100以内加减法、表内乘除、带余除法、整十数乘除
 	let question = {};
-	const dice =  Math.ceil(Math.random()*5);
-	console.log("dice："+dice);
-	switch (true){
-		case dice<=1:
-			question = addAndSubQuestion();
-			break;
-		case dice<=2:
-			question = simpleMul();
-			break;
-		case dice<=3:
-			question = simpleDiv();
-			break;
-		case dice<=4:
-			question = divWithRemainder();
-			break;
-		case dice<=5:
-			question = tensMulDiv();
-			break;
-		default:
-			question = addAndSubQuestion();
+	
+	if(grade==='1-2'){
+		//低年级
+		const dice =  Math.ceil(Math.random()*2);
+		console.log("dice："+dice);
+		switch (true){
+			case dice<=1:
+				question = simapleAddAndSubQuestion();
+				break;
+			case dice<=2:
+				question = simpleMul();
+				break;
+			default:
+				question = simapleAddAndSubQuestion();
+		}
+	}else if(grade==='3-4'){
+		//中年级 — 100以内加减法、表内乘除、带余除法、整十数乘除
+		const dice =  Math.ceil(Math.random()*5);
+		console.log("dice："+dice);
+		switch (true){
+			case dice<=1:
+				question = addAndSubQuestion();
+				break;
+			case dice<=2:
+				question = simpleMul();
+				break;
+			case dice<=3:
+				question = simpleDiv();
+				break;
+			case dice<=4:
+				question = divWithRemainder();
+				break;
+			case dice<=5:
+				question = tensMulDiv();
+				break;
+			default:
+				question = addAndSubQuestion();
+		}
 	}
 	const { express, pool, crrectAnswer } = question;
 	
@@ -34,6 +51,75 @@ function generateQuestion(grade, level) {
 	const options = shuffledPool.map((item,index)=>String.fromCharCode('A'.charCodeAt(0)+index)+". "+item)
 	
 	return { express, options, crrectItemCode };
+}
+
+/* 20以内的加减法 */
+function simapleAddAndSubQuestion() {
+	const op = Math.floor(Math.random()*2)==0?'-':'+';
+	let item1 = 0;
+	let item2 = 0;
+	let express = "";
+	let crrectAnswer = 0;
+	if(op==='+'){
+		item1 = Math.floor(Math.random()*11);
+		item2 = Math.floor(Math.random()*11);
+		express = item1+" "+op+" "+item2+ " = ?";
+		crrectAnswer = item1+item2;
+	}else if(op==='-'){
+		item1 = Math.floor(Math.random()*21);
+		item2 = Math.floor(Math.random()*11);
+		express = item1+" "+op+" "+item2+ " = ?";
+		crrectAnswer = item1-item2;
+		if(crrectAnswer<0 || crrectAnswer>20){
+			//超纲
+			return simapleAddAndSubQuestion();
+		}
+	}
+	
+	const pool = [];
+	pool.push(crrectAnswer)
+	while(pool.length<4){
+		const dice =  Math.ceil(Math.random()*(1+3+4));
+		
+		let distractor = -1;
+		switch (true){
+			case dice<=3:
+				//个位加减1（权重1）
+				if(Math.floor(Math.random()*2) == 0){
+					distractor = crrectAnswer - 1
+				}else{
+					distractor = crrectAnswer + 1
+				}
+				break;
+			case dice<=6:
+				//加法当减法，减法当加法 （权重3）
+				if(op==='+'){
+					distractor = item1 - item2
+				}else{
+					distractor = item1 + item2
+				}
+				break;	
+			default:
+				//随机生成一个数 （权重4）
+				distractor = Math.floor(Math.random()*101);
+		}
+		
+		if(distractor<0){
+			//备选项不合法
+			continue;
+		}
+		if(pool.includes(distractor)){
+			//备选项重复
+			continue;
+		}
+		pool.push(distractor);
+	}
+	
+	return {
+		express,
+		pool,
+		crrectAnswer
+	}
 }
 
 /*100以内加减法*/
