@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "predev:mp-weixin": "node scripts/inject-mp-weixin-appid.js",
+    "prebuild:mp-weixin": "node scripts/inject-mp-weixin-appid.js"
+  },
   "dependencies": {
     "uview-plus": "^3.8.18"
   }

@@ -3,3 +3,5 @@
 /.hbuilderx/
 /.DS_Store
 package-lock.json
+config/mp-weixin.local.json
+.env.local

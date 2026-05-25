@@ -1,0 +1,1 @@
+发布前请先运行以下脚本： node scripts/inject-mp-weixin-appid.js
