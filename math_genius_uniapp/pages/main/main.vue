@@ -90,7 +90,7 @@
 				allLevelCont:20,
 				done:0,
 				totalQustions:8,
-				countdown:45,
+				countdown:70,
 				hp:3,
 				combo:0,
 				score:0,
