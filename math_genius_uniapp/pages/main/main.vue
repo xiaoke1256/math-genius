@@ -77,6 +77,8 @@
 	
 	let interval = null;
 	
+	const INIT_COUNTDOWN = 70
+	
 	export default {
 		components: {
 			'u-button':UButton,
@@ -90,7 +92,7 @@
 				allLevelCont:20,
 				done:0,
 				totalQustions:8,
-				countdown:70,
+				countdown:INIT_COUNTDOWN,
 				hp:3,
 				combo:0,
 				score:0,
@@ -269,7 +271,11 @@
 			},
 			reStart(){
 				this.done=0;
-				this.countdown=70;
+				if(this.level==1){
+					this.countdown=INIT_COUNTDOWN;
+				}else{
+					this.countdown=INIT_COUNTDOWN+1-this.level;
+				}
 				this.hp=3;
 				this.combo=0;
 				this.score=0;
@@ -283,7 +289,11 @@
 				//背景颜色换一换
 				this.changeBgColor(this.level);
 				this.done=0;
-				this.countdown=70;
+				if(this.level==1){
+					this.countdown=INIT_COUNTDOWN;
+				}else{
+					this.countdown=INIT_COUNTDOWN+1-this.level;
+				}
 				if(this.combo>=5 && this.hp<3 ){
 					//达成5连击
 					this.hp++;
@@ -302,7 +312,7 @@
 				//背景颜色换一换
 				this.changeBgColor(this.level);
 				this.done=0;
-				this.countdown=70;
+				this.countdown=INIT_COUNTDOWN;
 				this.hp=3;
 				this.combo=0;
 				this.score=0;
