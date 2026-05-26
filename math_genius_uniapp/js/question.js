@@ -575,6 +575,31 @@ function buildMixedPool(crrectAnswer, getDistractor){
 /** 无括号混合运算 */
 function tryMixedNoBracket(){
 	const templates = [
+		// 纯加减：a ± b ± c
+		() => {
+			const op1 = Math.floor(Math.random() * 2) === 0 ? '+' : '-';
+			const op2 = Math.floor(Math.random() * 2) === 0 ? '+' : '-';
+			let n1, n2, n3;
+			if(op1 === '+' && op2 === '+'){
+				n1 = Math.floor(Math.random() * 30) + 1;
+				n2 = Math.floor(Math.random() * 30) + 1;
+				n3 = Math.floor(Math.random() * Math.max(1, 100 - n1 - n2)) + 1;
+			}else if(op1 === '+' && op2 === '-'){
+				n1 = Math.floor(Math.random() * 30) + 1;
+				n2 = Math.floor(Math.random() * 30) + 1;
+				const sum = n1 + n2;
+				n3 = Math.floor(Math.random() * Math.min(sum - 1, 50)) + 1;
+			}else if(op1 === '-' && op2 === '+'){
+				n2 = Math.floor(Math.random() * 30) + 1;
+				n3 = Math.floor(Math.random() * 30) + 1;
+				n1 = n2 + Math.floor(Math.random() * Math.min(50, 100 - n3)) + 1;
+			}else{
+				n2 = Math.floor(Math.random() * 20) + 1;
+				n3 = Math.floor(Math.random() * 20) + 1;
+				n1 = n2 + n3 + Math.floor(Math.random() * Math.min(50, 100 - n2 - n3)) + 1;
+			}
+			return { n1, op1, n2, op2, n3 };
+		},
 		() => {
 			const n2 = Math.floor(Math.random() * 8) + 2;
 			const n3 = Math.floor(Math.random() * 8) + 2;
@@ -652,12 +677,28 @@ function tryMixedNoBracket(){
 		const ans = calcMixed(n1, op1, n2, op2, n3);
 		if(ans <= 0 || ans > 100 || !Number.isInteger(ans)) continue;
 
+		const isPureAddSub = ['+', '-'].includes(op1) && ['+', '-'].includes(op2);
 		const pool = buildMixedPool(ans, () => {
 			const dice = Math.ceil(Math.random() * (3 + 2 + 2 + 3));
 			switch (true){
 				case dice <= 3:
+					if(isPureAddSub){
+						// 只做前两数或后两数
+						return Math.floor(Math.random() * 2) === 0
+							? applyOp(n1, op1, n2)
+							: applyOp(n2, op2, n3);
+					}
 					return calcLeftToRight(n1, op1, n2, op2, n3);
 				case dice <= 5:
+					if(isPureAddSub){
+						// 加减符号弄反
+						const wrongOp = Math.floor(Math.random() * 2) === 0 ? op1 : op2;
+						const flipOp = wrongOp === '+' ? '-' : '+';
+						if(wrongOp === op1){
+							return calcMixed(n1, flipOp, n2, op2, n3);
+						}
+						return calcMixed(n1, op1, n2, flipOp, n3);
+					}
 					if(Math.floor(Math.random() * 2) === 0){
 						const step1 = applyOp(n1, op1, n2);
 						return applyOp(step1, op2, n3);
