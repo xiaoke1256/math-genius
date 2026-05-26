@@ -46,9 +46,49 @@
 			<view v-if="isFinish" class="finish-page">
 				<text class="title">本局结束</text>
 				<text>{{finishReason}}</text><!--结束原因-->
-				<text class="score">{{score}}分</text><!--分数-->
-				<text>称号：{{}}</text><!--称号-->
-				<text>最高关卡：第{{level}}关</text>
+				<view class="static-area">
+					<view><text class="score">{{score}}分</text></view><!--分数-->
+					<view class="row">
+						<view>
+							<text>错题数：</text>
+						</view>
+						<view>
+							{{errorCount}}题&nbsp;<u-button size="small" @click="showErrorQuestions">回顾</u-button>
+						</view>
+					</view>
+					<view class="row">
+						<view>
+							<text>耗时：</text>
+						</view>
+						<view>
+							<text>{{expendTime}}秒</text>
+						</view>
+					</view>
+					<view class="row">
+						<view>
+							<text>最高连击：</text>
+						</view>
+						<view>
+							<text>{{hightestCombo}}次</text>
+						</view>
+					</view>
+					<view class="row">
+						<view>
+							<text>最高关卡：</text>
+						</view>
+						<view>
+							<text>第{{level}}关</text>
+						</view>
+					</view>
+					<view class="row">
+						<view>
+							<text>称号：</text>
+						</view>
+						<view>
+							<text>{{}}</text><!--称号-->
+						</view>
+					</view>
+				</view>
 				<view class="button-area">
 					<u-button @click="reStart" type="primary">再来一局</u-button>
 					<u-button @click="toHome">返回首页</u-button>
@@ -58,6 +98,7 @@
 			
 			<view v-if="isSuccess" class="success-page">
 				<text class="title">{{successMsg}}</text><!--或者“恭喜你，完成了所有关卡！”-->
+				<text>错{{errorCount}}题</text>
 				<view class="button-area">
 					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
 					<u-button v-if="isAllLevelCompleted" @click="toFirstLevel" type="success">重新开始</u-button>
@@ -77,7 +118,7 @@
 	
 	let interval = null;
 	
-	const INIT_COUNTDOWN = 70
+	const INIT_COUNTDOWN = 60
 	
 	export default {
 		components: {
@@ -93,13 +134,16 @@
 				done:0,
 				totalQustions:8,
 				countdown:INIT_COUNTDOWN,
+				initCountdown:INIT_COUNTDOWN,
 				hp:3,
 				combo:0,
+				hightestCombo:0,
 				score:0,
 				express:'',
 				options:[],
 				crrectItemCode:'C',
 				selectedItemCode:'',
+				errorQuestions:[],
 				isFinish:false,
 				finishReason:'',
 				isSuccess:false,
@@ -123,7 +167,7 @@
 			}
 		},
 		methods: {
-			onSelectItem: function(itemCode){
+			onSelectItem:function(itemCode){
 				if(!this.btnEnable){
 					//拒绝响应
 					return false;
@@ -138,6 +182,16 @@
 					console.log("true");
 				}else{
 					console.log("false");
+					//把错题保存到本地缓存
+					if(!this.errorQuestions){
+						this.errorQuestions = [];
+					}
+					this.errorQuestions.push({
+						'express':this.express,
+						'options':this.options,
+						'crrectItemCode':this.crrectItemCode,
+						'errorItemCode':itemCode
+					});
 				}
 				//显示错误样式半秒钟，然后消失
 				this.selectedItemCode = itemCode;
@@ -155,6 +209,9 @@
 			refreshScore(correct) {
 			    if (correct) {
 					this.combo += 1;
+					if(this.hightestCombo<this.combo){
+						this.hightestCombo = this.combo;
+					}
 					const bonus = Math.min(10, Math.floor(this.combo / 3) * 2);
 					this.score += 10 + bonus;
 					this.done += 1;
@@ -164,6 +221,9 @@
 					this.hp -= 1;
 					const msg = `答错啦！`;
 			    }
+			},
+			showErrorQuestions(){
+				console.log('SSSS');
 			},
 			nextQuestion() {
 				//如果时间或生命值耗尽，提示游戏结束
@@ -273,16 +333,20 @@
 				this.done=0;
 				if(this.level==1){
 					this.countdown=INIT_COUNTDOWN;
+					this.initCountdown=INIT_COUNTDOWN;
 				}else{
 					this.countdown=INIT_COUNTDOWN+1-this.level;
+					this.initCountdown=INIT_COUNTDOWN+1-this.level;
 				}
 				this.hp=3;
 				this.combo=0;
+				this.hightestCombo=0;
 				this.score=0;
 				this.nextQuestion(this.grade);
 				//启动倒计时
 				this.startCountDown();
 				this.isFinish=false;
+				this.errorQuestions=[];
 			},
 			toNextLevel(){
 				this.level++;
@@ -291,8 +355,10 @@
 				this.done=0;
 				if(this.level==1){
 					this.countdown=INIT_COUNTDOWN;
+					this.initCountdown=INIT_COUNTDOWN;
 				}else{
 					this.countdown=INIT_COUNTDOWN+1-this.level;
+					this.initCountdown=INIT_COUNTDOWN+1-this.level;
 				}
 				if(this.combo>=5 && this.hp<3 ){
 					//达成5连击
@@ -300,12 +366,14 @@
 				}
 				//this.hp=3;
 				this.combo=0;
+				this.hightestCombo=0;
 				this.score=0;
 				this.nextQuestion(this.grade);
 				//启动倒计时
 				this.startCountDown();
 				this.isSuccess=false;
 				this.isFinish=false;
+				this.errorQuestions=[];
 			},
 			toFirstLevel(){
 				this.level=1;
@@ -313,14 +381,17 @@
 				this.changeBgColor(this.level);
 				this.done=0;
 				this.countdown=INIT_COUNTDOWN;
+				this.initCountdown=INIT_COUNTDOWN;
 				this.hp=3;
 				this.combo=0;
+				this.hightestCombo=0;
 				this.score=0;
 				this.nextQuestion(this.grade);
 				//启动倒计时
 				this.startCountDown();
 				this.isSuccess=false;
 				this.isFinish=false;
+				this.errorQuestions=[];
 			}
 		
 		},
@@ -330,6 +401,12 @@
 			},
 			isAllLevelCompleted(){
 				return this.level>=this.allLevelCont;
+			},
+			errorCount(){
+				return this.errorQuestions.length;
+			},
+			expendTime(){
+				return this.initCountdown - this.countdown;
 			},
 			optionButtonStyles() {
 				const base = {
@@ -452,6 +529,30 @@
 			gap: 20rpx;
 			u-button{
 				width: 50%;
+			}
+		}
+		.static-area {
+			width: 70%;
+			>view{
+				text-align: center;
+			}
+			.row{
+				display: flex;
+				flex-direction: row;
+				view{
+					width: 50%;
+					display: flex;
+					flex-direction: row;
+					white-space:nowrap;
+				}
+				text{
+					white-space:nowrap;
+				}
+				u-button{
+					margin-left: 10rpx;
+					margin-right: 10rpx;
+				}
+				
 			}
 		}
 	}
