@@ -419,11 +419,11 @@ function tensMulDiv(){
 			crrectAnswer = Math.floor(Math.random()*8)+2;
 			item1 = item2 * crrectAnswer;
 		}else{
-			// 整十 ÷ 一位数，如 60÷3=2、80÷4=20
+			// 整十 ÷ 一位数，如 60÷30=20、80÷4=20
 			item2 = Math.floor(Math.random()*8)+2;
 			if(Math.floor(Math.random()*2)===0){
 				crrectAnswer = Math.floor(Math.random()*8)+2;
-				item1 = item2 * crrectAnswer * 10;
+				item1 = item2 * crrectAnswer;
 			}else{
 				crrectAnswer = (Math.floor(Math.random()*8)+2)*10;
 				item1 = item2 * crrectAnswer;
