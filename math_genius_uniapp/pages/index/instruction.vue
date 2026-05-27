@@ -15,7 +15,7 @@
                     <view> &nbsp; 表内乘除法;</view>
                     <view> &nbsp; 带余数的乘除法;</view>
                     <view> &nbsp; 整十数乘除法;</view>
-                    <view> &nbsp; 混合运算（不含复杂括号）。</view>
+                    <view> &nbsp; 混合运算。</view>
                 </view>
                 <view >
                     <view style="font-weight: 800;">&bull; 高年级（5-6 年级）：</view>
