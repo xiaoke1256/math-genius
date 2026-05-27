@@ -46,7 +46,14 @@
 			<view v-if="isFinish" class="finish-page">
 				<text class="title">本局结束</text>
 				<text>{{finishReason}}</text><!--结束原因-->
-				<static :score="score" :errorCount="errorCount" :expendTime="expendTime" :hightestCombo="hightestCombo" :level="level" />
+				<static 
+					:score="score" 
+					:errorCount="errorCount" 
+					:expendTime="expendTime" 
+					:hightestCombo="hightestCombo" 
+					:level="level"
+					@showErrorQuestions="showErrorQuestions"
+				 />
 				<view class="button-area">
 					<u-button @click="reStart" type="primary">再来一局</u-button>
 					<u-button @click="toHome">返回首页</u-button>
@@ -56,7 +63,14 @@
 			
 			<view v-if="isSuccess" class="success-page">
 				<text class="title">{{successMsg}}</text><!--或者“恭喜你，完成了所有关卡！”-->
-				<static :score="score" :errorCount="errorCount" :expendTime="expendTime" :hightestCombo="hightestCombo" :level="level" />
+				<static 
+					:score="score" 
+					:errorCount="errorCount" 
+					:expendTime="expendTime" 
+					:hightestCombo="hightestCombo" 
+					:level="level"
+					@showErrorQuestions="showErrorQuestions"
+				/>
 				<view class="button-area">
 					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
 					<u-button v-if="isAllLevelCompleted" @click="toFirstLevel" type="success">重新开始</u-button>
@@ -67,12 +81,24 @@
 			<view style="height: 20%;" />
 		</view>
 	</view>
+	<u-modal :show="showErrorReview" @confirm="showErrorReview=false" >
+		<view class="slot-content">
+			<error-question
+			  v-if="showErrorReview"
+			  :errorQuestions="errorQuestions"
+			  @close="showErrorReview = false"
+			/>
+		</view>
+	</u-modal>
+	
 </template>
 
 <script>
 	import ULineProgress from "uview-plus/components/u-line-progress/u-line-progress.vue";
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
+	import UModal from 'uview-plus/components/u-modal/u-modal.vue'
 	import Static from '/pages/main/static.vue'
+	import ErrorQuestion from '/pages/main/errorQuestion.vue'
 	import {generateQuestion} from "../../js/question"
 	
 	let interval = null;
@@ -83,7 +109,9 @@
 		components: {
 			'u-button':UButton,
 			'u-line-progress': ULineProgress,
-			'static':Static
+			'static':Static,
+			'error-question':ErrorQuestion,
+			'u-modal':UModal
 		},
 		data() {
 			return {
@@ -109,6 +137,7 @@
 				isSuccess:false,
 				successMsg:'恭喜你，通关啦！',
 				bgColor:'main-content-background',
+				showErrorReview:false,
 				animationData: {}
 			}
 		},
@@ -183,7 +212,8 @@
 			    }
 			},
 			showErrorQuestions(){
-				console.log('SSSS');
+				console.log('触发 showErrorQuestions')
+				this.showErrorReview=true;
 			},
 			nextQuestion() {
 				//如果时间或生命值耗尽，提示游戏结束
@@ -320,7 +350,7 @@
 					this.countdown=INIT_COUNTDOWN+1-this.level;
 					this.initCountdown=INIT_COUNTDOWN+1-this.level;
 				}
-				if(this.combo>=5 && this.hp<3 ){
+				if(this.hightestCombo>=5 && this.hp<3 ){
 					//达成5连击
 					this.hp++;
 				}

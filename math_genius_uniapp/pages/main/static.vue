@@ -7,7 +7,7 @@
 				<text>错题数：</text>
 			</view>
 			<view>
-				{{errorCount}}题&nbsp;<u-button v-if="errorCount>0" size="small" @click="showErrorQuestions">回顾</u-button>
+				{{errorCount}}题&nbsp;<u-button v-if="errorCount>0" size="small" @click="showReview">回顾</u-button>
 			</view>
 		</view>
 		<view class="row">
@@ -58,8 +58,9 @@
 			
 		},
 		methods:{
-			showErrorQuestions(){
-				console.log("showErrorQuestions.");
+			showReview(){
+				console.log("showReview.");
+				this.$emit('showErrorQuestions')
 			}
 		}
 	}
