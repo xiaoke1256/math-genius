@@ -142,7 +142,7 @@
 					console.log("true");
 				}else{
 					console.log("false");
-					//把错题保存到本地缓存
+					//保存错题
 					if(!this.errorQuestions){
 						this.errorQuestions = [];
 					}
