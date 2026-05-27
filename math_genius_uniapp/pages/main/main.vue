@@ -46,49 +46,7 @@
 			<view v-if="isFinish" class="finish-page">
 				<text class="title">本局结束</text>
 				<text>{{finishReason}}</text><!--结束原因-->
-				<view class="static-area">
-					<view><text class="score">{{score}}分</text></view><!--分数-->
-					<view class="row">
-						<view>
-							<text>错题数：</text>
-						</view>
-						<view>
-							{{errorCount}}题&nbsp;<u-button size="small" @click="showErrorQuestions">回顾</u-button>
-						</view>
-					</view>
-					<view class="row">
-						<view>
-							<text>耗时：</text>
-						</view>
-						<view>
-							<text>{{expendTime}}秒</text>
-						</view>
-					</view>
-					<view class="row">
-						<view>
-							<text>最高连击：</text>
-						</view>
-						<view>
-							<text>{{hightestCombo}}次</text>
-						</view>
-					</view>
-					<view class="row">
-						<view>
-							<text>最高关卡：</text>
-						</view>
-						<view>
-							<text>第{{level}}关</text>
-						</view>
-					</view>
-					<view class="row">
-						<view>
-							<text>称号：</text>
-						</view>
-						<view>
-							<text>{{}}</text><!--称号-->
-						</view>
-					</view>
-				</view>
+				<static :score="score" :errorCount="errorCount" :expendTime="expendTime" :hightestCombo="hightestCombo" :level="level" />
 				<view class="button-area">
 					<u-button @click="reStart" type="primary">再来一局</u-button>
 					<u-button @click="toHome">返回首页</u-button>
@@ -98,7 +56,7 @@
 			
 			<view v-if="isSuccess" class="success-page">
 				<text class="title">{{successMsg}}</text><!--或者“恭喜你，完成了所有关卡！”-->
-				<text>错{{errorCount}}题</text>
+				<static :score="score" :errorCount="errorCount" :expendTime="expendTime" :hightestCombo="hightestCombo" :level="level" />
 				<view class="button-area">
 					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
 					<u-button v-if="isAllLevelCompleted" @click="toFirstLevel" type="success">重新开始</u-button>
@@ -114,6 +72,7 @@
 <script>
 	import ULineProgress from "uview-plus/components/u-line-progress/u-line-progress.vue";
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
+	import Static from '/pages/main/static.vue'
 	import {generateQuestion} from "../../js/question"
 	
 	let interval = null;
@@ -123,7 +82,8 @@
 	export default {
 		components: {
 			'u-button':UButton,
-			'u-line-progress': ULineProgress
+			'u-line-progress': ULineProgress,
+			'static':Static
 		},
 		data() {
 			return {
@@ -531,30 +491,7 @@
 				width: 50%;
 			}
 		}
-		.static-area {
-			width: 70%;
-			>view{
-				text-align: center;
-			}
-			.row{
-				display: flex;
-				flex-direction: row;
-				view{
-					width: 50%;
-					display: flex;
-					flex-direction: row;
-					white-space:nowrap;
-				}
-				text{
-					white-space:nowrap;
-				}
-				u-button{
-					margin-left: 10rpx;
-					margin-right: 10rpx;
-				}
-				
-			}
-		}
+		
 	}
 	.success-page{
 		width: 100%;
