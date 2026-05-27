@@ -44,7 +44,7 @@
 				<text class="correct-text">正确答案是 {{ correctAnswerText }}</text>
 			</view>
 
-			<view class="nav-area">
+			<view v-if="errorQuestions.length>1" class="nav-area">
 				<u-button
 					size="small"
 					:disabled="currentIndex <= 0"
@@ -67,6 +67,7 @@
 
 		<view class="footer">
 			<!-- <u-button type="primary" @click="onClose">知道了</u-button> -->
+			<u-button type="primary" @click="">保存至错题集</u-button>
 		</view>
 	</view>
 </template>
