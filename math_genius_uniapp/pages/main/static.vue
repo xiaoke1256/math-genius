@@ -81,10 +81,16 @@
 			display: flex;
 			flex-direction: row;
 			view{
-				width: 50%;
 				display: flex;
 				flex-direction: row;
 				white-space:nowrap;
+				text-align: left;
+			}
+			:first-child{
+				width: 70%;
+			}
+			:nth-child(2){
+				width: 30%;
 			}
 			text{
 				white-space:nowrap;

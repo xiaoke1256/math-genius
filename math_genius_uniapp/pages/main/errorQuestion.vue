@@ -84,6 +84,10 @@
 				type: Boolean,
 				default: true
 			},
+			grade:{
+				type: String,
+				default:''
+			},
 			errorQuestions: {
 				type: Array,
 				default: () => []
@@ -159,6 +163,12 @@
 			onClose() {
 				this.$emit('update:show', false)
 				this.$emit('close')
+			},
+			saveToErrorList() {
+				const errorQuesttion = this.currentQuestion();
+				errorQuesttion.saveDate = new Date();
+				errorQuesttion.garde = this.grade;
+				//拟用 uniCloud 云数据库
 			}
 		}
 	}
