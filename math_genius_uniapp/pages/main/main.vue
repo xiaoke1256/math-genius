@@ -357,7 +357,7 @@
 				//this.hp=3;
 				this.combo=0;
 				this.hightestCombo=0;
-				this.score=0;
+				//this.score=0;
 				this.nextQuestion(this.grade);
 				//启动倒计时
 				this.startCountDown();

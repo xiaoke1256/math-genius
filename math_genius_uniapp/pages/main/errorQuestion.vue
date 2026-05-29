@@ -66,8 +66,7 @@
 		</view>
 
 		<view class="footer">
-			<!-- <u-button type="primary" @click="onClose">知道了</u-button> -->
-			<u-button type="primary" @click="">保存至错题集</u-button>
+			<!-- <u-button type="primary" @click="">保存至错题集</u-button> -->
 		</view>
 	</view>
 </template>
