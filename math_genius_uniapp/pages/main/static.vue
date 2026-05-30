@@ -2,57 +2,70 @@
 <template>
 	<view class="static-area">
 		<view><text class="score">{{score}}分</text></view><!--分数-->
-		<view class="row">
-			<view>
-				<text>错题数：</text>
+		<view style="display: flex;flex-direction: row;justify-content:center;width:100%;align-items:center;">
+			<view >
+				<view class="row">
+					<view>
+						<text>错题数：</text>
+					</view>
+					<view>
+						{{errorCount}}题&nbsp;<u-button v-if="errorCount>0" size="small" @click="showReview">回顾</u-button>
+					</view>
+				</view>
+				<view class="row">
+					<view>
+						<text>耗时：</text>
+					</view>
+					<view>
+						<text>{{expendTime}}秒</text>
+					</view>
+				</view>
+				<view class="row">
+					<view>
+						<text>最高连击：</text>
+					</view>
+					<view>
+						<text>{{hightestCombo}}次</text>
+					</view>
+				</view>
+				<view class="row">
+					<view>
+						<text>最高关卡：</text>
+					</view>
+					<view>
+						<text>第{{level}}关</text>
+					</view>
+				</view>
+				<view class="row">
+					<view>
+						<text>称号：</text>
+					</view>
+					<view>
+						<text>{{}}</text><!--称号-->
+					</view>
+				</view>
 			</view>
-			<view>
-				{{errorCount}}题&nbsp;<u-button v-if="errorCount>0" size="small" @click="showReview">回顾</u-button>
-			</view>
-		</view>
-		<view class="row">
-			<view>
-				<text>耗时：</text>
-			</view>
-			<view>
-				<text>{{expendTime}}秒</text>
-			</view>
-		</view>
-		<view class="row">
-			<view>
-				<text>最高连击：</text>
-			</view>
-			<view>
-				<text>{{hightestCombo}}次</text>
-			</view>
-		</view>
-		<view class="row">
-			<view>
-				<text>最高关卡：</text>
-			</view>
-			<view>
-				<text>第{{level}}关</text>
-			</view>
-		</view>
-		<view class="row">
-			<view>
-				<text>称号：</text>
-			</view>
-			<view>
-				<text>{{}}</text><!--称号-->
-			</view>
+			<image v-if="isSuccess" class="winner-image" :src="winnerImage" mode="aspectFit" />
 		</view>
 	</view>
 </template>
 
 <script>
+	import winnerImage from "@/static/winner.png"
+	
 	export default {
 		props: {
 		    score:0,
 		    errorCount:0,
 		    expendTime:0,
 		    hightestCombo:0,
-		    level:1
+		    level:1,
+			isSuccess: false,
+		},
+		data(){
+			return {
+				winnerImage:winnerImage
+			}
 		},
 		mounted(){
 			
@@ -68,7 +81,7 @@
 
 <style lang="scss">
 	.static-area {
-		width: 70%;
+		width: 90%;
 		>view{
 			text-align: center;
 		}
@@ -101,5 +114,10 @@
 			}
 			
 		}
+		.winner-image{
+			height: 300rpx;
+			width:200rpx;
+		}
+		
 	}
 </style>

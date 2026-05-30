@@ -63,13 +63,14 @@
 			
 			<view v-if="isSuccess" class="success-page">
 				<text class="title">{{successMsg}}</text><!--或者“恭喜你，完成了所有关卡！”-->
-				<static 
+				<static
 					:score="score" 
 					:errorCount="errorCount" 
 					:expendTime="expendTime" 
 					:hightestCombo="hightestCombo" 
 					:level="level"
 					@showErrorQuestions="showErrorQuestions"
+					:isSuccess="isSuccess"
 				/>
 				<view class="button-area">
 					<u-button v-if="!isAllLevelCompleted" @click="toNextLevel" type="success">下一关</u-button>
