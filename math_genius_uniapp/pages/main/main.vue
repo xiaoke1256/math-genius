@@ -25,7 +25,7 @@
 					</view>
 					<view class="item" >
 						<view class="item-head" >得分</view>
-						<view class="item-value" >{{score}}</view>
+						<view class="item-value" ><u-count-to style="font-size: 0.9rem;color: black;" :start-val="0" :end-val="score"></u-count-to></view>
 					</view>
 				</view>
 				<view class="progress-area">
@@ -98,6 +98,7 @@
 	import ULineProgress from "uview-plus/components/u-line-progress/u-line-progress.vue";
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
 	import UModal from 'uview-plus/components/u-modal/u-modal.vue'
+	import UCountTo from "uview-plus/components/u-count-to/u-count-to.vue"
 	import Static from '/pages/main/static.vue'
 	import ErrorQuestion from '/pages/main/errorQuestion.vue'
 	import {generateQuestion} from "../../js/question"
@@ -112,7 +113,8 @@
 			'u-line-progress': ULineProgress,
 			'static':Static,
 			'error-question':ErrorQuestion,
-			'u-modal':UModal
+			'u-modal':UModal,
+			'u-count-to':UCountTo
 		},
 		data() {
 			return {
