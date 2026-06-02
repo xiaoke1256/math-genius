@@ -114,9 +114,10 @@
 			text{
 				white-space:nowrap;
 			}
-			u-button{
+			.u-button{
 				margin-left: 10rpx;
 				margin-right: 10rpx;
+				background-color: rgba(255, 255, 255, 0.5) !important;
 			}
 			
 		}
