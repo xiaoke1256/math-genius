@@ -55,9 +55,13 @@
 <script>
 	import winnerImage from "@/static/winner.png"
 	import UCountTo from "uview-plus/components/u-count-to/u-count-to.vue"
+	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
+	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
 	
 	export default {
 		components: {
+			'up-icon': UIcon,
+			'u-loading-icon': ULoadingIcon,
 			'u-count-to':UCountTo
 		},
 		props: {
@@ -87,7 +91,8 @@
 
 <style lang="scss">
 	.static-area {
-		width: 90%;
+		width: 100%;
+		align-items:center;
 		>view{
 			text-align: center;
 		}
@@ -127,6 +132,7 @@
 			position: relative;
 			z-index: 1;
 			flex-shrink: 0;
+			left: -50rpx;
 		}
 		
 	}
@@ -140,6 +146,8 @@
 	}
 	.static-stats{
 		position: relative;
+		margin-left: 50rpx;
+		margin-right: 50rpx;
 		z-index: 2;
 		flex: 1;
 	}

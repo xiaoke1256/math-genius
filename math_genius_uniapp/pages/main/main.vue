@@ -97,6 +97,8 @@
 <script>
 	import ULineProgress from "uview-plus/components/u-line-progress/u-line-progress.vue";
 	import UButton from 'uview-plus/components/u-button/u-button.vue'
+	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
+	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
 	import UModal from 'uview-plus/components/u-modal/u-modal.vue'
 	import UCountTo from "uview-plus/components/u-count-to/u-count-to.vue"
 	import Static from '/pages/main/static.vue'
@@ -109,6 +111,8 @@
 	
 	export default {
 		components: {
+			'up-icon': UIcon,
+			'u-loading-icon': ULoadingIcon,
 			'u-button':UButton,
 			'u-line-progress': ULineProgress,
 			'static':Static,
