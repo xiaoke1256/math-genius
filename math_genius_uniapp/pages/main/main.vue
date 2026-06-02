@@ -25,7 +25,7 @@
 					</view>
 					<view class="item" >
 						<view class="item-head" >得分</view>
-						<view class="item-value" ><u-count-to style="font-size: 0.9rem;color: black;" :start-val="0" :end-val="score"></u-count-to></view>
+						<view class="item-value" ><u-count-to :start-val="0" :end-val="score"></u-count-to></view>
 					</view>
 				</view>
 				<view class="progress-area">
@@ -488,7 +488,12 @@
 		}
 		.item{
 			text-align: center;
+			.item-value .u-count-num{
+				font-size: 0.9rem !important;
+				color: black !important;
+			}
 		}
+		
 	}
 	.progress-area{
 		width: 100%;

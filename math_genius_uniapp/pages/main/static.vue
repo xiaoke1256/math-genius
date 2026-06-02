@@ -4,8 +4,8 @@
 		<view>
 			<u-count-to class="score" :startVal="0" :endVal="score"></u-count-to>分
 		</view>
-		<view style="display: flex;flex-direction: row;justify-content:center;width:100%;align-items:center;">
-			<view >
+		<view class="static-items-area">
+			<view class="static-stats">
 				<view class="row">
 					<view>
 						<text>错题数：</text>
@@ -123,7 +123,23 @@
 		.winner-image{
 			height: 300rpx;
 			width:200rpx;
+			position: relative;
+			z-index: 1;
+			flex-shrink: 0;
 		}
 		
+	}
+	.static-items-area{
+		display: flex;
+		flex-direction: row;
+		justify-content:center;
+		width:100%;
+		align-items:center;
+		position: relative;
+	}
+	.static-stats{
+		position: relative;
+		z-index: 2;
+		flex: 1;
 	}
 </style>
