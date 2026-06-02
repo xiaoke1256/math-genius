@@ -11,20 +11,27 @@
 			</view>
 			<view class="link-area">
 				<!--#ifdef MP-WEIXIN-->
-				<view>
-					&bull; 请在“小程序右上角更多 → 反馈与投诉”中和开发者反馈
+				<view class="link-item">
+					<text class="link-bullet">&bull;</text>
+					<text>请在“小程序右上角更多 → 反馈与投诉”中和开发者反馈</text>
 				</view>
 				<!--#endif-->
 				<!--#ifndef MP-WEIXIN-->
-				<view>
-					&bull; <text>微博：</text> <text class="link" @click="openInBrowser('https://weibo.com/u/1478889745')">去吐槽</text>
+				<view class="link-item">
+					<text class="link-bullet">&bull;</text>
+					<text class="link-label">微博：</text>
+					<text class="link" @click="openInBrowser('https://weibo.com/u/1478889745')">去吐槽</text>
 				</view>
-				<view>
-					&bull; <text>guthub：</text> <text class="link" @click="openInBrowser('https://github.com/xiaoke1256/math-genius/discussions/categories/announcements')" >去吐槽</text>
+				<view class="link-item">
+					<text class="link-bullet">&bull;</text>
+					<text class="link-label">github：</text>
+					<text class="link" @click="openInBrowser('https://github.com/xiaoke1256/math-genius/discussions/categories/announcements')">去吐槽</text>
 				</view>
 				<!--#endif-->
-				<view>
-					&bull; <text>邮箱：</text> <text>xiaoke_1256@sina.com</text>
+				<view class="link-item">
+					<text class="link-bullet">&bull;</text>
+					<text class="link-label">邮箱：</text>
+					<text class="link-value">xiaoke_1256@sina.com</text>
 				</view>
 			</view>
 			
@@ -137,10 +144,25 @@
 				text-decoration: underline;
 				color: #0000ff;
 			}
-			uni-view {
+			.link-item {
 				display: flex;
 				flex-direction: row;
+				flex-wrap: wrap;
+				align-items: baseline;
+				margin-bottom: 8rpx;
+			}
+			.link-bullet {
+				flex-shrink: 0;
+				margin-right: 0.25em;
+			}
+			.link-label {
+				flex-shrink: 0;
 				white-space: nowrap;
+			}
+			.link-value {
+				flex: 1;
+				min-width: 0;
+				word-break: break-all;
 			}
 		}
 		
