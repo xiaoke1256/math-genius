@@ -5,14 +5,17 @@ function generateQuestion(grade, level) {
 	
 	if(grade==='1-2'){
 		//低年级
-		const dice =  Math.ceil(Math.random()*2);
+		const dice =  Math.ceil(Math.random()*7);
 		console.log("dice："+dice);
 		switch (true){
-			case dice<=1:
+			case dice<=3:
 				question = simapleAddAndSubQuestion();
 				break;
-			case dice<=2:
+			case dice<=6:
 				question = simpleMul();
+				break;
+			case dice<=7:
+				question = pureAddSubMixedQuestion();
 				break;
 			default:
 				question = simapleAddAndSubQuestion();
@@ -38,7 +41,7 @@ function generateQuestion(grade, level) {
 				question = tensMulDiv();
 				break;
 			case dice<=6:
-				question = mixedOperations();
+				question = tryMixedNoBracket();
 				break;
 			default:
 				question = addAndSubQuestion();
@@ -572,34 +575,75 @@ function buildMixedPool(crrectAnswer, getDistractor){
 	return pool;
 }
 
+/** 纯加减：a ± b ± c */
+function genPureAddSubParams(){
+	const op1 = Math.floor(Math.random() * 2) === 0 ? '+' : '-';
+	const op2 = Math.floor(Math.random() * 2) === 0 ? '+' : '-';
+	let n1, n2, n3;
+	if(op1 === '+' && op2 === '+'){
+		n1 = Math.floor(Math.random() * 30) + 1;
+		n2 = Math.floor(Math.random() * 30) + 1;
+		n3 = Math.floor(Math.random() * Math.max(1, 100 - n1 - n2)) + 1;
+	}else if(op1 === '+' && op2 === '-'){
+		n1 = Math.floor(Math.random() * 30) + 1;
+		n2 = Math.floor(Math.random() * 30) + 1;
+		const sum = n1 + n2;
+		n3 = Math.floor(Math.random() * Math.min(sum - 1, 50)) + 1;
+	}else if(op1 === '-' && op2 === '+'){
+		n2 = Math.floor(Math.random() * 30) + 1;
+		n3 = Math.floor(Math.random() * 30) + 1;
+		n1 = n2 + Math.floor(Math.random() * Math.min(50, 100 - n3)) + 1;
+	}else{
+		n2 = Math.floor(Math.random() * 20) + 1;
+		n3 = Math.floor(Math.random() * 20) + 1;
+		n1 = n2 + n3 + Math.floor(Math.random() * Math.min(50, 100 - n2 - n3)) + 1;
+	}
+	return { n1, op1, n2, op2, n3 };
+}
+
+/** 无括号纯加减混合：a ± b ± c */
+function pureAddSubMixedQuestion(){
+	for(let t = 0; t < 30; t++){
+		const { n1, op1, n2, op2, n3 } = genPureAddSubParams();
+		const ans = calcMixed(n1, op1, n2, op2, n3);
+		if(ans <= 0 || ans > 100 || !Number.isInteger(ans)) continue;
+
+		const pool = buildMixedPool(ans, () => {
+			const dice = Math.ceil(Math.random() * (3 + 2 + 2 + 3));
+			switch (true){
+				case dice <= 3:
+					return Math.floor(Math.random() * 2) === 0
+						? applyOp(n1, op1, n2)
+						: applyOp(n2, op2, n3);
+				case dice <= 5:
+					const wrongOp = Math.floor(Math.random() * 2) === 0 ? op1 : op2;
+					const flipOp = wrongOp === '+' ? '-' : '+';
+					if(wrongOp === op1){
+						return calcMixed(n1, flipOp, n2, op2, n3);
+					}
+					return calcMixed(n1, op1, n2, flipOp, n3);
+				case dice <= 7:
+					return ans + (Math.floor(Math.random() * 2) === 0
+						? (Math.floor(Math.random() * 2) === 0 ? -1 : 1)
+						: (Math.floor(Math.random() * 2) === 0 ? -10 : 10));
+				default:
+					return Math.floor(Math.random() * 101);
+			}
+		});
+		if(!pool) continue;
+		return {
+			express: formatPlainExpress(n1, op1, n2, op2, n3),
+			pool,
+			crrectAnswer: ans
+		};
+	}
+	return pureAddSubMixedQuestion();
+}
+
 /** 无括号混合运算 */
 function tryMixedNoBracket(){
 	const templates = [
-		// 纯加减：a ± b ± c
-		() => {
-			const op1 = Math.floor(Math.random() * 2) === 0 ? '+' : '-';
-			const op2 = Math.floor(Math.random() * 2) === 0 ? '+' : '-';
-			let n1, n2, n3;
-			if(op1 === '+' && op2 === '+'){
-				n1 = Math.floor(Math.random() * 30) + 1;
-				n2 = Math.floor(Math.random() * 30) + 1;
-				n3 = Math.floor(Math.random() * Math.max(1, 100 - n1 - n2)) + 1;
-			}else if(op1 === '+' && op2 === '-'){
-				n1 = Math.floor(Math.random() * 30) + 1;
-				n2 = Math.floor(Math.random() * 30) + 1;
-				const sum = n1 + n2;
-				n3 = Math.floor(Math.random() * Math.min(sum - 1, 50)) + 1;
-			}else if(op1 === '-' && op2 === '+'){
-				n2 = Math.floor(Math.random() * 30) + 1;
-				n3 = Math.floor(Math.random() * 30) + 1;
-				n1 = n2 + Math.floor(Math.random() * Math.min(50, 100 - n3)) + 1;
-			}else{
-				n2 = Math.floor(Math.random() * 20) + 1;
-				n3 = Math.floor(Math.random() * 20) + 1;
-				n1 = n2 + n3 + Math.floor(Math.random() * Math.min(50, 100 - n2 - n3)) + 1;
-			}
-			return { n1, op1, n2, op2, n3 };
-		},
+		genPureAddSubParams,
 		() => {
 			const n2 = Math.floor(Math.random() * 8) + 2;
 			const n3 = Math.floor(Math.random() * 8) + 2;
