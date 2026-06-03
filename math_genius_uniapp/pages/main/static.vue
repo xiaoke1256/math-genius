@@ -1,8 +1,16 @@
 <!-- 每关结束的统计页面 -->
 <template>
 	<view class="static-area">
-		<view>
-			<u-count-to class="score" :startVal="0" :endVal="score"></u-count-to>分
+		<view class="score-row">
+			<u-count-to
+				class="score"
+				:startVal="0"
+				:endVal="score"
+				fontSize="64rpx"
+				:bold="true"
+				color="#000000"
+			/>
+			<text>分</text>
 		</view>
 		<view class="static-items-area">
 			<view class="static-stats">
@@ -57,7 +65,7 @@
 	import UCountTo from "uview-plus/components/u-count-to/u-count-to.vue"
 	import ULoadingIcon from 'uview-plus/components/u-loading-icon/u-loading-icon.vue'
 	import UIcon from 'uview-plus/components/u-icon/u-icon.vue'
-	
+
 	export default {
 		components: {
 			'up-icon': UIcon,
@@ -93,13 +101,14 @@
 	.static-area {
 		width: 100%;
 		align-items:center;
-		>view{
-			text-align: center;
+		.score-row {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: baseline;
 		}
-		.title,.score{
-			font-size: 2rem !important;
-			font-weight: 600 !important;
-			color: black !important;
+		:deep(.u-count-num) {
+			font-family: "Microsoft YaHei", Arial, sans-serif;
 		}
 		.row{
 			display: flex;
