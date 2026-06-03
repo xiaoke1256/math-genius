@@ -8,11 +8,14 @@ function generateQuestion(grade, level) {
 		const dice =  Math.ceil(Math.random()*7);
 		console.log("dice："+dice);
 		switch (true){
-			case dice<=3:
+			case dice<=2:
 				question = simapleAddAndSubQuestion();
 				break;
-			case dice<=6:
+			case dice<=4:
 				question = simpleMul();
+				break;
+			case dice<=6:
+				question = compareNumbersWithin100();
 				break;
 			case dice<=7:
 				question = pureAddSubMixedQuestion();
@@ -126,6 +129,41 @@ function simapleAddAndSubQuestion() {
 		pool,
 		crrectAnswer
 	}
+}
+
+/** 100以内数字比较 */
+function compareNumbersWithin100() {
+	const a = Math.floor(Math.random() * 100);
+	const b = Math.floor(Math.random() * 100);
+	const express = a + " ○ " + b + "";
+
+	let crrectAnswer;
+	if (a > b) {
+		crrectAnswer = '>';
+	} else if (a < b) {
+		crrectAnswer = '<';
+	} else {
+		crrectAnswer = '=';
+	}
+
+	const compareByTens = (x, y) => {
+		const tx = Math.floor(x / 10);
+		const ty = Math.floor(y / 10);
+		if (tx > ty) return '>';
+		if (tx < ty) return '<';
+		return '=';
+	};
+	const compareByOnes = (x, y) => {
+		const ox = x % 10;
+		const oy = y % 10;
+		if (ox > oy) return '>';
+		if (ox < oy) return '<';
+		return '=';
+	};
+
+	const pool = ['>', '<', '='];
+
+	return { express, pool, crrectAnswer };
 }
 
 /*100以内加减法*/
