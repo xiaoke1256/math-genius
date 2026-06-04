@@ -16,6 +16,11 @@
             "autoclose" : true,
             "delay" : 0
         },
+        "privacy" : {
+            "prompt" : "template", //可取值template、none
+            "template" : {}
+        },
+        //prompt取值为template时有效，用于配置模板提示框上显示的内容
         /* 模块配置 */
         "modules" : {},
         /* 应用发布信息 */
