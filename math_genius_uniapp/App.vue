@@ -33,5 +33,6 @@
 		align-items: center;
 		justify-content: space-between;
 		height: 100%;
+		background: $u-bg-color;
 	}
 </style>
