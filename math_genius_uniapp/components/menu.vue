@@ -41,7 +41,7 @@
 				show:false,
 				list:[
 					{name: MENU_NAME_ABOUT, color: MENU_TEXT_COLOR},
-					{name: '错题集', color: MENU_TEXT_COLOR},
+					// {name: '错题集', color: MENU_TEXT_COLOR},
 					{name: MENU_NAME_COMPLAIN, color: MENU_TEXT_COLOR},
 					// 真机 u-popup 内 cancel-text 的主题色变量无法解析，须与菜单项一样用 actions.color
 					{name: MENU_NAME_CANCEL, color: MENU_TEXT_COLOR}
