@@ -1,7 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			console.log('App Launch');
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -33,6 +33,6 @@
 		align-items: center;
 		justify-content: space-between;
 		height: 100%;
-		background: $u-bg-color;
+		background-color: #f3f4f6;
 	}
 </style>
