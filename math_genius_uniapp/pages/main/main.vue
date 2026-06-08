@@ -238,6 +238,7 @@
 					}
 					
 					this.isFinish=true;
+					return;
 				}
 				//如果进度达到100%,显示升级界面
 				if(this.done>=this.totalQustions){
@@ -251,6 +252,7 @@
 						clearInterval(interval);
 						interval = null;
 					}
+					return;
 				}
 				
 				const {express,options,crrectItemCode} = generateQuestion(this.grade,this.level);
@@ -297,8 +299,12 @@
 				if(this.countdown==0){
 					clearInterval(interval);
 					interval = null;
+					//有可能已经结束了。
+					if(this.isFinish || this.isSuccess){
+						return;
+					}
 					//显示结束页面
-					this.finishReason='时间到'
+					this.finishReason='时间到';
 					this.isFinish=true;
 				}
 			},
