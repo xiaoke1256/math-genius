@@ -18,8 +18,9 @@
 					<view>
 						<text>错题数：</text>
 					</view>
-					<view>
-						{{errorCount}}题&nbsp;<u-button v-if="errorCount>0" size="small" @click="showReview">回顾</u-button>
+					<view class="error-count-row">
+						<text>{{errorCount}}题</text>
+						<view v-if="errorCount>0" class="review-btn" @tap="showReview">回顾</view>
 					</view>
 				</view>
 				<view class="row">
@@ -128,12 +129,26 @@
 			text{
 				white-space:nowrap;
 			}
-			.u-button{
-				margin-left: 10rpx;
-				margin-right: 10rpx;
-				background-color: rgba(255, 255, 255, 0.5) !important;
+			.error-count-row {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				gap: 10rpx;
 			}
-			
+			.review-btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0 16rpx;
+				height: 48rpx;
+				font-size: 24rpx;
+				color: #323233;
+				text-align: center;
+				background-color: rgba(255, 255, 255, 0.5);
+				border: 1px solid rgba(124, 124, 124, 0.8);
+				border-radius: 6rpx;
+				flex-shrink: 0;
+			}
 		}
 		.winner-image{
 			height: 300rpx;
