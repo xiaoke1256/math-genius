@@ -8,7 +8,7 @@
                     <view style="font-weight: 800;"> &bull; 低年级（1-2 年级）：</view>
                     <view> &nbsp; 20以内加减法;</view>
 					<view> &nbsp; 表内乘除法;</view>
-                    <view> &nbsp; 简单数字比较。</view>
+                    <view> &nbsp; 简单数字比较;</view>
 					<view> &nbsp; 加减混合运算。</view>
                 </view>
                 <view>
