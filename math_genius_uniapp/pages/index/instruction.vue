@@ -17,7 +17,8 @@
                     <view> &nbsp; 表内乘除法;</view>
                     <view> &nbsp; 带余数的乘除法;</view>
                     <view> &nbsp; 整十数乘除法;</view>
-                    <view> &nbsp; 四则混合运算。</view>
+                    <view> &nbsp; 四则混合运算;</view>
+                    <view> &nbsp; “以下哪些加起来是整百数”选择题。</view>
                 </view>
                 <view >
                     <view style="font-weight: 800;">&bull; 高年级（5-6 年级）：</view>

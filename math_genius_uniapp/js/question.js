@@ -24,8 +24,8 @@ function generateQuestion(grade, level) {
 				question = simapleAddAndSubQuestion();
 		}
 	}else if(grade==='3-4'){
-		//中年级 — 100以内加减法、表内乘除、带余除法、整十数乘除、四则混合
-		const dice =  Math.ceil(Math.random()*6);
+		//中年级 — 100以内加减法、表内乘除、带余除法、整十数乘除、四则混合、整百数加法判断
+		const dice =  Math.ceil(Math.random()*7);
 		console.log("dice："+dice);
 		switch (true){
 			case dice<=1:
@@ -46,6 +46,9 @@ function generateQuestion(grade, level) {
 			case dice<=6:
 				question = tryMixedNoBracket();
 				break;
+			case dice<=7:
+				question = wholeHundredAddQuestion();
+				break;
 			default:
 				question = addAndSubQuestion();
 		}
@@ -60,6 +63,59 @@ function generateQuestion(grade, level) {
 	const options = shuffledPool.map((item,index)=>String.fromCharCode('A'.charCodeAt(0)+index)+". "+item)
 	
 	return { express, options, crrectItemCode };
+}
+
+function wholeHundredAddQuestion() {
+	const target = (Math.floor(Math.random() * 5) + 1) * 100;
+	const correctA = Math.floor(Math.random() * (target - 1)) + 1;
+	const correctB = target - correctA;
+	const correctExpression = `${correctA} + ${correctB}`;
+	const pool = [correctExpression];
+	const usedExpressions = new Set([correctExpression]);
+
+	const buildExpressionBySum = (sum, preferredA = null) => {
+		if (sum <= 1) {
+			return null;
+		}
+		const a = preferredA !== null && preferredA < sum ? preferredA : Math.floor(Math.random() * (sum - 1)) + 1;
+		if (a >= sum) {
+			return null;
+		}
+		return `${a} + ${sum - a}`;
+	};
+
+	const isWholeHundred = (sum) => sum > 0 && sum % 100 === 0;
+	const getCarryMistakeExpression = () => {
+		if (correctB > 10) {
+			return buildExpressionBySum(target + 10, correctA);
+		}
+		return buildExpressionBySum(target + 1, correctA);
+	};
+
+	const carryMistakeExpression = getCarryMistakeExpression();
+	if (carryMistakeExpression) {
+		pool.push(carryMistakeExpression);
+		usedExpressions.add(carryMistakeExpression);
+	}
+
+	while (pool.length < 4) {
+		const candidateSum = Math.floor(Math.random() * 500) + 1;
+		if (isWholeHundred(candidateSum)) {
+			continue;
+		}
+		const expression = buildExpressionBySum(candidateSum);
+		if (!expression || usedExpressions.has(expression)) {
+			continue;
+		}
+		pool.push(expression);
+		usedExpressions.add(expression);
+	}
+
+	return {
+		express: '以下哪些加起来是整百数？',
+		pool,
+		crrectAnswer: correctExpression
+	};
 }
 
 /* 20以内的加减法 */
